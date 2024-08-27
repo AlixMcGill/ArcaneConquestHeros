@@ -67,7 +67,7 @@
 
 3. Each card must have a stat page
 
-    - Exp (Max Lvl 250)
+    - Exp (Max Lvl 50)
     - Vitality (Health)
     - Strength ()
         - Damage Mod & Block
