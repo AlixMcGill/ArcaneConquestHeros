@@ -103,4 +103,13 @@ export default class builder {
         input.placeholder = placeholderText;
         return input;
     }
+    
+    withClassCreateTextInput(idName, placeholderText, classList) {
+        const input = document.createElement('input');
+        input.id = idName;
+        input.type = 'text';
+        input.placeholder = placeholderText;
+        input.classList = classList;
+        return input;
+    }
 }

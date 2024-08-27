@@ -3,7 +3,7 @@ import builder from '../Modules/builder.js';
 const contentContainer = document.getElementById('content-container');
 
 function createLoginElements() {
-    const build = new builder(contentContainer);
+    const build = new builder('content-container');
     const wrapper = build.createDiv('login-wrapper');
     const title = build.createH1('Arcane Conquest Heros', 'login-title');
     const emailInput = build.createTextInput('email-input', 'E-Mail');

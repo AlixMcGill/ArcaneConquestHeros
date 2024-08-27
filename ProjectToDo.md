@@ -1,6 +1,6 @@
 # Project To Do schema
 
-- Init Setup Electron App
+- Init Setup Electron App **********
 
 - Init Setup dotnet backend
 
