@@ -9,7 +9,17 @@
     <link rel="stylesheet" href="../css/gameboard.css">
   </head>
   <body>
-      <a href="./homePage.html">Back</a>
+        <div class="ui-wrapper">
+           <div class="life-bar-wrapper">
+               <div class="life-bar-container"> 
+                   <p id="life-amount-id" class="life-amount">
+                       <span id="life-counter-id" class="life-counter">0</span> /
+                       <span id="life-counter-max-id" class="life-counter-max">100</span>
+                   </p>
+               </div>
+                <div id="life-container-filler-id" class="life-container-filler"></div>
+           </div> 
+        </div>
   </body>
   <script type="module" src="../js/Renderers/mainGameLogic.js"></script>
 </html>
