@@ -15,3 +15,18 @@
     margin-top: -20rem;
     margin-bottom: 4rem;
 }
+
+#submit-wrapper {
+    display: flex;
+    justify-content: space-between;
+    width: 12%;
+    gap: 1rem;
+}
+
+#login-button, #create-new-account-btn {
+    padding: .3rem;
+}
+
+#login-button:hover, #create-new-account-btn:hover {
+    cursor: pointer;
+}

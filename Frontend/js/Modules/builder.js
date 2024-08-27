@@ -14,7 +14,7 @@ export default class builder {
         return div;
     }
 
-    createDiv(idName, classlist) {
+    withClassCreateDiv(idName, classlist) {
         const div = document.createElement('div');
         div.id = idName;
         div.classList = classlist;
@@ -28,7 +28,7 @@ export default class builder {
         return p;
     }
 
-    createP(innerText, idName, classList) {
+    withClassCreateP(innerText, idName, classList) {
         const p = document.createElement('p');
         p.id = idName;
         p.classList = classList;
@@ -43,7 +43,7 @@ export default class builder {
         return h1;
     }
 
-    createH1(innerText, idName, classlist) {
+    withClassCreateH1(innerText, idName, classlist) {
         const h1 = document.createElement('h1');
         h1.id = idName;
         h1.classList = classlist;
@@ -58,12 +58,27 @@ export default class builder {
         return button;
     }
 
-    createButton(innerText, idName, classList) {
+    withClassCreateButton(innerText, idName, classList) {
         const button = document.createElement('button');
         button.id = idName;
         button.classList = classList;
         button.innerText = innerText;
         return button;
+    }
+
+    createA(href, idname) {
+        const a = document.createElement('a');
+        a.href = href;
+        a.id = idname;
+        return a;
+    }
+
+    withClassCreateA(href, idname, classList) {
+        const a = document.createElement('a');
+        a.href = href;
+        a.id = idname;
+        a.classList = classList;
+        return a;
     }
 
     createSpan(innerText, idName) {
@@ -73,7 +88,7 @@ export default class builder {
         return span;
     }
 
-    createSpan(innerText, idName, classList) {
+    withClassCreateSpan(innerText, idName, classList) {
         const span = document.createElement('span');
         span.id = idName;
         span.classList = classList;
