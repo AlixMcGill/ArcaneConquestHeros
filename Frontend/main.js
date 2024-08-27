@@ -3,6 +3,7 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('node:path');
 
 const createWindow = () => {
+    let loginStatus = true; // will implement better later NOT PERMENENT
     const win = new BrowserWindow({
         width: 800,
         height: 600,
@@ -11,7 +12,11 @@ const createWindow = () => {
         }
     });
     //win.removeMenu();
-    win.loadFile('./html/index.html');
+    if (loginStatus) {
+        win.loadFile('./html/homePage.html');
+    } else {
+        win.loadFile('./html/index.html');
+    }
 }
 
 app.whenReady().then(() => {

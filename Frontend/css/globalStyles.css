@@ -3,6 +3,10 @@
     padding: 0%;
 }
 
+li, a {
+    all: unset;
+}
+
 body {
     background-color: grey;
 }
