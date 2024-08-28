@@ -3,8 +3,8 @@ export default class builder {
         this.containerId = containerId
     }
 
-    cleanContainer() {
-        const wrapper = document.getElementById(this.containerId);
+    cleanContainer(containerId) {
+        const wrapper = document.getElementById(containerId);
         wrapper.innerHTML = '';
     }
 
