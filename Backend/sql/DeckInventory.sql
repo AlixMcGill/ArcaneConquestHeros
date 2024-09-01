@@ -1,6 +1,6 @@
 CREATE TABLE DeckInventory (
     id SERIAL PRIMARY KEY,
-    PlayerId INT NOT NULL,
+    UserId INT NOT NULL,
     Name VARCHAR(30) NOT NULL,
     Description VARCHAR(300) NOT NULL,
     HeroIdOne INT NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE DeckInventory (
     HeroIdEight INT NOT NULL,
     HeroIdNine INT NOT NULL,
     HeroIdTen INT NOT NULL,
-    FOREIGN KEY(PlayerId) REFERENCES Users(id),
+    FOREIGN KEY(UserId) REFERENCES Users(id),
     FOREIGN KEY(HeroIdOne) REFERENCES HeroInventory(id),
     FOREIGN KEY(HeroIdTwo) REFERENCES HeroInventory(id),
     FOREIGN KEY(HeroIdThree) REFERENCES HeroInventory(id),
