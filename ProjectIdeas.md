@@ -159,6 +159,7 @@
 
     - in game currency can be used to buy and sell player generated items
     - heros are account bound and cannot be traded
+    - betting system maybe?
 
 4. Gameplay loop
 
