@@ -3,4 +3,4 @@ Backend/obj/
 Backend/bin/
 appsettings.json
 backend.http
-.sln
+*.sln
