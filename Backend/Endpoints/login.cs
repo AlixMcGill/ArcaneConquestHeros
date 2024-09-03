@@ -13,11 +13,29 @@ public static class Login
     {
         var group = app.MapGroup("Login");
 
-        group.MapGet("/", async ([FromServices] NpgsqlConnection connection) =>
+        group.MapPost("/UserLogin", async (UserDto currentUser, [FromServices] NpgsqlConnection connection) =>
             {
-                var users = await connection.QueryAsync<UserDto>("SELECT * FROM users");
+                var sanitizer = new Sanitizer();
 
-                return Results.Ok(users);
+                if(!sanitizer.CheckForInvalidCharacters(currentUser.Email) ||
+                    !sanitizer.CheckForInvalidCharacters(currentUser.Password) ||
+                    !sanitizer.IsPasswordValid(currentUser.Password)) return Results.BadRequest();
+
+                var users = await connection.QuerySingleOrDefaultAsync<UserDto>(
+                        "SELECT * FROM users WHERE email=@email",
+                        new {email = currentUser.Email});
+
+                if (users == null) return Results.BadRequest();
+
+                var validatePassword = BCrypt.Net.BCrypt.EnhancedVerify(currentUser.Password, users.Password);
+
+                if (validatePassword)
+                {
+                    users.Password = "";
+                    return Results.Ok(users);
+                }
+
+                return Results.BadRequest();
             });
 
         group.MapPost("/", async (UserDto newUser, [FromServices] NpgsqlConnection connection) => 
