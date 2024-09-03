@@ -5,6 +5,12 @@
 - Have an elo rating
 - Have Ai Elo rating
 - Have an Account lvl
+    - exp cal 
+    `
+    var exp = 0
+    var lvl = 0
+    var nextLvlExp = lvl * 2.5 * 1000  
+    `
 - Have In game currency wallet NO REAL MONEY
 - have an inventory of items 
 - have an inventory of heros

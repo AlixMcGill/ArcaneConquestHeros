@@ -1,4 +1,5 @@
-
+using Backend.endpoints;
+using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddTransient(x =>
+        new NpgsqlConnection(builder.Configuration.GetConnectionString("DbConnection")));
 
 var app = builder.Build();
 
@@ -17,5 +21,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.loginRoute();
 
 app.Run();
