@@ -3,6 +3,7 @@ using Dapper;
 using Microsoft.AspNetCore.Mvc;
 using Npgsql;
 using BCrypt.Net;
+using Backend.Tools;
 
 namespace Backend.endpoints;
 
@@ -21,6 +22,14 @@ public static class Login
 
         group.MapPost("/", async (UserDto newUser, [FromServices] NpgsqlConnection connection) => 
             {
+                var sanitizer = new Sanitizer();
+
+                if (!sanitizer.IsPasswordValid(newUser.Password.ToString()) || 
+                    !sanitizer.CheckForInvalidCharacters(newUser.Password.ToString()) ||
+                    !sanitizer.CheckForInvalidCharacters(newUser.Email.ToString()) || 
+                    !sanitizer.CheckForInvalidCharacters(newUser.Username.ToString())
+                    ) return Results.BadRequest();
+                
                 var checkExsitingEmail = connection.QuerySingleOrDefault<UserDto>(
                         "SELECT email FROM users WHERE email=@email LIMIT 1;",
                         new {email = newUser.Email});
