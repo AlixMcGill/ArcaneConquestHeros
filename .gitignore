@@ -4,3 +4,4 @@ Backend/bin/
 appsettings.json
 backend.http
 *.sln
+*.env
