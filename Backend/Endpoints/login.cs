@@ -1,9 +1,12 @@
+using System.Text;
 using Backend.Dtos;
 using Dapper;
-using Microsoft.AspNetCore.Mvc;
 using Npgsql;
-using BCrypt.Net;
 using Backend.Tools;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.endpoints;
 
@@ -13,7 +16,9 @@ public static class Login
     {
         var group = app.MapGroup("Login");
 
-        group.MapPost("/UserLogin", async (UserDto currentUser, [FromServices] NpgsqlConnection connection) =>
+        group.MapPost("/UserLogin",
+                [AllowAnonymous] 
+                async (UserDto currentUser, HttpContext ctx, [FromServices] NpgsqlConnection connection) =>
             {
                 var sanitizer = new Sanitizer();
 
@@ -32,7 +37,34 @@ public static class Login
                 if (validatePassword)
                 {
                     users.Password = "";
-                    return Results.Ok(users);
+
+                    var issuer = app.Configuration["Jwt:Issuer"];
+                    var audience = app.Configuration["Jwt:Audience"];
+                    var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(app.Configuration["Jwt:key"]));
+                    var cred = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+                    var token = new JwtSecurityToken(
+                            issuer: issuer,
+                            audience: audience,
+                            signingCredentials: cred
+                            );
+
+                    var tokenHandler = new JwtSecurityTokenHandler();
+                    var stringToken = tokenHandler.WriteToken(token);
+
+                    var jwtCookieOptions = new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = false,
+                        SameSite = SameSiteMode.Strict,
+                        Expires = DateTimeOffset.UtcNow.AddDays(1)
+                    };
+
+                    ctx.Response.Cookies.Append("AuthToken", stringToken, jwtCookieOptions);
+
+                    
+
+                    return Results.Ok(stringToken);
                 }
 
                 return Results.BadRequest();
