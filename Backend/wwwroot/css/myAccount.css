@@ -1,0 +1,13 @@
+.account-section-tabs ul {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.account-section-tabs li:hover {
+    cursor: pointer;
+}
+
+.account-section-tabs {
+    width: 100%;
+}

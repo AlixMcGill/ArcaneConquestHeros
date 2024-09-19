@@ -20,6 +20,7 @@ public static class Login
                 [AllowAnonymous] 
                 async (UserDto currentUser, HttpContext ctx, [FromServices] NpgsqlConnection connection) =>
             {
+                int userLoginTimeInDays = 1;
                 var sanitizer = new Sanitizer();
 
                 if(!sanitizer.CheckForInvalidCharacters(currentUser.Email) ||
@@ -54,23 +55,36 @@ public static class Login
 
                     var jwtCookieOptions = new CookieOptions
                     {
-                        HttpOnly = true,
+                        HttpOnly = false,
                         Secure = false,
                         SameSite = SameSiteMode.Strict,
-                        Expires = DateTimeOffset.UtcNow.AddDays(1)
+                        Expires = DateTimeOffset.UtcNow.AddDays(userLoginTimeInDays)
                     };
 
                     ctx.Response.Cookies.Append("AuthToken", stringToken, jwtCookieOptions);
 
-                    
+                    var userCookieOptions = new CookieOptions
+                    {
+                        HttpOnly = false,
+                        Secure = false,
+                        SameSite = SameSiteMode.Strict,
+                        Expires = DateTimeOffset.UtcNow.AddDays(userLoginTimeInDays)
+                    };
 
-                    return Results.Ok(stringToken);
+                    ctx.Response.Cookies.Append("UserId", users.Id.ToString(), userCookieOptions);
+                    ctx.Response.Cookies.Append("Username", users.Username, userCookieOptions);
+                    ctx.Response.Cookies.Append("AcccountLvl", users.AccountLvl.ToString(), userCookieOptions);
+                    ctx.Response.Cookies.Append("ExpToNextLvl", users.ExpToNextLvl.ToString(), userCookieOptions);
+                    ctx.Response.Cookies.Append("Elo", users.Elo.ToString(), userCookieOptions);
+                    ctx.Response.Cookies.Append("CurrentExp", users.CurrentExp.ToString(), userCookieOptions);
+
+                    return Results.Ok();
                 }
 
                 return Results.BadRequest();
             });
 
-        group.MapPost("/", async (UserDto newUser, [FromServices] NpgsqlConnection connection) => 
+        group.MapPost("/", [AllowAnonymous] async (UserDto newUser, [FromServices] NpgsqlConnection connection) => 
             {
                 var sanitizer = new Sanitizer();
 
