@@ -9,6 +9,7 @@ public class UserDto
     [Required] public string Username  { get; set; } = ""; 
     [Required] public string Password  { get; set; } = "";
     public int? AccountLvl             { get; set; }
+    public int? CurrentExp             { get; set; }
     public int? ExpToNextLvl           { get; set; }
     public int? Elo                    { get; set; }
 }

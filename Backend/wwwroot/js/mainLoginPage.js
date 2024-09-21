@@ -50,11 +50,9 @@ async function postUserLogin() {
             throw new Error(`Response Status: ${response.status}`);
         }
  
-        const info = await response.json();
-
         if (response.ok) {
             cookies.setCookie('LoginStatus', true, 10);
-            console.log(info);
+            window.location.href = '/homePage.html';
         }
     } catch (error) {
        console.error(error.message);
@@ -65,3 +63,11 @@ const loginButton = document.getElementById('login-button');
 loginButton.addEventListener('click', () => {
     postUserLogin();
 });
+
+
+window.onload = () => {
+    console.log(document.cookie);
+    if (cookies.getCookie('AuthToken', 1)) {
+        window.location.href = '/homePage.html';
+    }
+};

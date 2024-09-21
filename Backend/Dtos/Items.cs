@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Backend.Dtos;
 
-public class Items
+public class ItemsDto
 {
     public int Id                          { get; set; }
     [Required] public string? Name         { get; set; }

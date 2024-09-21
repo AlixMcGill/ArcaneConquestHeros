@@ -1,9 +1,12 @@
+using System.Text;
 using Backend.Dtos;
 using Dapper;
-using Microsoft.AspNetCore.Mvc;
 using Npgsql;
-using BCrypt.Net;
 using Backend.Tools;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.endpoints;
 
@@ -13,8 +16,11 @@ public static class Login
     {
         var group = app.MapGroup("Login");
 
-        group.MapPost("/UserLogin", async (UserDto currentUser, [FromServices] NpgsqlConnection connection) =>
+        group.MapPost("/UserLogin",
+                [AllowAnonymous] 
+                async (UserDto currentUser, HttpContext ctx, [FromServices] NpgsqlConnection connection) =>
             {
+                int userLoginTimeInDays = 1;
                 var sanitizer = new Sanitizer();
 
                 if(!sanitizer.CheckForInvalidCharacters(currentUser.Email) ||
@@ -22,7 +28,7 @@ public static class Login
                     !sanitizer.IsPasswordValid(currentUser.Password)) return Results.BadRequest();
 
                 var users = await connection.QuerySingleOrDefaultAsync<UserDto>(
-                        "SELECT * FROM users WHERE email=@email",
+                        "SELECT * FROM users WHERE email=@email;",
                         new {email = currentUser.Email});
 
                 if (users == null) return Results.BadRequest();
@@ -32,13 +38,53 @@ public static class Login
                 if (validatePassword)
                 {
                     users.Password = "";
-                    return Results.Ok(users);
+
+                    var issuer = app.Configuration["Jwt:Issuer"];
+                    var audience = app.Configuration["Jwt:Audience"];
+                    var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(app.Configuration["Jwt:key"]));
+                    var cred = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+                    var token = new JwtSecurityToken(
+                            issuer: issuer,
+                            audience: audience,
+                            signingCredentials: cred
+                            );
+
+                    var tokenHandler = new JwtSecurityTokenHandler();
+                    var stringToken = tokenHandler.WriteToken(token);
+
+                    var jwtCookieOptions = new CookieOptions
+                    {
+                        HttpOnly = false,
+                        Secure = false,
+                        SameSite = SameSiteMode.Strict,
+                        Expires = DateTimeOffset.UtcNow.AddDays(userLoginTimeInDays)
+                    };
+
+                    ctx.Response.Cookies.Append("AuthToken", stringToken, jwtCookieOptions);
+
+                    var userCookieOptions = new CookieOptions
+                    {
+                        HttpOnly = false,
+                        Secure = false,
+                        SameSite = SameSiteMode.Strict,
+                        Expires = DateTimeOffset.UtcNow.AddDays(userLoginTimeInDays)
+                    };
+
+                    ctx.Response.Cookies.Append("UserId", users.Id.ToString(), userCookieOptions);
+                    ctx.Response.Cookies.Append("Username", users.Username, userCookieOptions);
+                    ctx.Response.Cookies.Append("AcccountLvl", users.AccountLvl.ToString(), userCookieOptions);
+                    ctx.Response.Cookies.Append("ExpToNextLvl", users.ExpToNextLvl.ToString(), userCookieOptions);
+                    ctx.Response.Cookies.Append("Elo", users.Elo.ToString(), userCookieOptions);
+                    ctx.Response.Cookies.Append("CurrentExp", users.CurrentExp.ToString(), userCookieOptions);
+
+                    return Results.Ok();
                 }
 
                 return Results.BadRequest();
             });
 
-        group.MapPost("/", async (UserDto newUser, [FromServices] NpgsqlConnection connection) => 
+        group.MapPost("/", [AllowAnonymous] async (UserDto newUser, [FromServices] NpgsqlConnection connection) => 
             {
                 var sanitizer = new Sanitizer();
 
@@ -71,7 +117,7 @@ public static class Login
                 await connection.ExecuteAsync(
                         @"INSERT INTO users 
                             (email, username, password, accountLvl, currentExp, ExpToNextLvl, Elo)
-                        VALUES (@email, @username, @password, @accountLvl, @currentExp, @expToNextLvl, @elo)",
+                        VALUES (@email, @username, @password, @accountLvl, @currentExp, @expToNextLvl, @elo);",
                         new 
                         {
                             email = newUser.Email,

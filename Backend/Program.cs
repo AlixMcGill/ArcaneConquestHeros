@@ -1,5 +1,8 @@
+using System.Text;
 using Backend.endpoints;
 using Npgsql;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +13,26 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddTransient(x =>
         new NpgsqlConnection(builder.Configuration.GetConnectionString("DbConnection")));
+
+builder.Services.AddAuthentication(options => 
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options => 
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:ValidIssuer"],
+            ValidAudience = builder.Configuration["Jwt:ValidAudience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:key"]))
+        };
+    });
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -29,6 +52,10 @@ app.UseDefaultFiles(options);
 
 app.UseStaticFiles();
 
-app.loginRoute();
+app.UseAuthorization();
+app.UseAuthentication();
 
-app.Run();
+app.loginRoute();
+app.UserDataRoute();
+
+app.Run(); 
