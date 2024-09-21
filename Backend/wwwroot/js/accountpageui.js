@@ -4,6 +4,7 @@ import hostaddress from './Modules/hostaddress.js';
 
 const build = new builder;
 const hostadd = new hostaddress;
+const cookies = new Cookies;
 
 class cardObject {
     constructor(
@@ -76,7 +77,6 @@ async function renderUserDecks() {
         }
 
         if (response.ok) {
-            window.location.href = `${hostadd.address}/login.html`
         }
 
     } catch (error) {
@@ -88,8 +88,65 @@ function renderUserHeroCards() {
 
 }
 
-function renderUserItemCards() {
+async function callApiGetUserItemCards() {
+    console.log(cookies.getCookieByName('UserId'))
+    const userId =  cookies.getCookieByName('UserId');
+    const url = `${hostadd.address}/UserData/ItemCardInventory/${userId}`
+    try {
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
 
+        const ItemCards = await response.json();
+
+        if (!response.ok) {
+            throw new Error(`Response Status: ${response.status}`);
+        }
+
+        if (response.ok) {
+            return ItemCards;
+        }
+
+    } catch (error) {
+       console.error(error.message);
+    }
+}
+
+async function renderUserItemCards(parentElement) {
+    let itemcards = await callApiGetUserItemCards();
+
+    await itemcards.forEach((card, index) => {
+        const cardWrapper = build.withClassCreateDiv(`item-inventory-card-${index}`, "item-inventory-card");
+        const cardHeader = build.withClassCreateDiv(`item-inventory-card-header-${index}`, 'item-inventory-card-header');
+        const cardName = build.withClassCreateP(card.name, `item-inventory-card-name-${index}`, 'item-inventory-card-name');
+        const requiredLvl = build.withClassCreateP(
+            `Req Lvl: ${card.requiredLvl}`, `item-inventory-card-reqLvl-${index}`, 'item-inventory-reqLvl');
+        cardHeader.appendChild(cardName);
+        cardHeader.appendChild(requiredLvl);
+        cardWrapper.appendChild(cardHeader);
+
+        const cardDescription = build.withClassCreateP(card.description, 
+            `item-inventory-card-description-${index}`, 'item-inventory-card-description');
+        cardWrapper.appendChild(cardDescription);
+
+        const strMod = build.withClassCreateP(
+            `Strength Mod: ${card.strengthMod}`, `item-inventory-card-strMod-${index}`, 'item-inventory-modifer');
+        const intelMod = build.withClassCreateP(
+            `Intellegence Mod: ${card.intellegenceMod}`, `item-inventory-card-intMod-${index}`, 'item-inventory-modifer');
+        const dexMod = build.withClassCreateP(
+            `Dexterity Mod: ${card.dexterityMod}`, `item-inventory-card-dexMod-${index}`, 'item-inventory-modifer');
+        const wisMod = build.withClassCreateP(
+            `Wisdom Mod: ${card.wisdomMod}`, `item-inventory-card-wisMod-${index}`, 'item-inventory-modifer');
+        cardWrapper.appendChild(strMod);
+        cardWrapper.appendChild(intelMod);
+        cardWrapper.appendChild(dexMod);
+        cardWrapper.appendChild(wisMod);
+
+        parentElement.appendChild(cardWrapper);
+    });
 }
 
 const contentContainer = document.getElementById('account-content-container');
@@ -122,5 +179,5 @@ heroCardsBtn.addEventListener('click', () => {
 itemCardsBtn.addEventListener('click', () => {
     clearAllItems();
     highlightCurrentTab(itemCardsBtn, allTabs);
-    renderUserItemCards();
+    renderUserItemCards(contentContainer);
 });
