@@ -10,16 +10,17 @@
   </head>
   <body>
       <a href="./homePage.html">Back</a>
-      <section>
+      <section class="account-page-wrapper">
           <div class="account-section-tabs">
               <ul>
-                <li><p>Account</p></li>
-                <li><p>Hero Cards</p></li>
-                <li><p>Item Cards</p></li>
+                <li id="account-account-list-item" class="account-list-item highlighted-tab"><p>Account</p></li>
+                <li id="account-decks-list-item" class="account-list-item"><p>Decks</p></li>
+                <li id="account-heros-list-item" class="account-list-item"><p>Hero Cards</p></li>
+                <li id="account-items-list-item" class="account-list-item"><p>Item Cards</p></li>
               </ul>
           </div>
-          <div class="account-container"></div>
+          <div id="account-content-container" class="account-container"></div>
       </section>
   </body>
-  <script type="module" src="../js/Renderers/myAccount.js"></script>
+  <script type="module" src="./js/accountpageui.js"></script>
 </html>

@@ -28,7 +28,7 @@ public static class Login
                     !sanitizer.IsPasswordValid(currentUser.Password)) return Results.BadRequest();
 
                 var users = await connection.QuerySingleOrDefaultAsync<UserDto>(
-                        "SELECT * FROM users WHERE email=@email",
+                        "SELECT * FROM users WHERE email=@email;",
                         new {email = currentUser.Email});
 
                 if (users == null) return Results.BadRequest();
@@ -117,7 +117,7 @@ public static class Login
                 await connection.ExecuteAsync(
                         @"INSERT INTO users 
                             (email, username, password, accountLvl, currentExp, ExpToNextLvl, Elo)
-                        VALUES (@email, @username, @password, @accountLvl, @currentExp, @expToNextLvl, @elo)",
+                        VALUES (@email, @username, @password, @accountLvl, @currentExp, @expToNextLvl, @elo);",
                         new 
                         {
                             email = newUser.Email,

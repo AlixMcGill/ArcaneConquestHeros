@@ -56,5 +56,6 @@ app.UseAuthorization();
 app.UseAuthentication();
 
 app.loginRoute();
+app.UserDataRoute();
 
 app.Run(); 
