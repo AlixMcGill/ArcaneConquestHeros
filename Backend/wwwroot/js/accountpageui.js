@@ -1,44 +1,20 @@
 import builder from './Modules/builder.js';
 import Cookies from './Modules/cookies.js';
 import hostaddress from './Modules/hostaddress.js';
+import HeroCard from './Modules/heroCard.js';
+import ItemCard from './Modules/itemCard.js';
 
 const build = new builder;
 const hostadd = new hostaddress;
 const cookies = new Cookies;
 
-class cardObject {
-    constructor(
-        heroIcon, 
-        name, 
-        cardLvl,
-        cardExp,
-        cardClass,
-        strengthStat,
-        intellegenceStat,
-        dexterityStat,
-        wisdomStat,
-        itemHeldName
-    ) {
-        this.heroIcon = heroIcon;
-        this.cardName = name;
-        this.cardLvl = cardLvl;
-        this.cardExp = cardExp;
-        this.cardClass = cardClass;
-        this.strengthStat = strengthStat;
-        this.intellegenceStat = intellegenceStat;
-        this.dexterityStat = dexterityStat;
-        this.wisdomStat = wisdomStat;
-        this.itemHeldName = itemHeldName;
-    }
 
-    renderMini() {
+// arrays of all information to be displayed on the page
+const allUserInformation = [];
+const allUserDecks = [];
+const allUserHeroCars = [];
+const allUserItemCards = [];
 
-    }
-
-    renderFull() {
-
-    }
-}
 
 function clearAllItems() {
     const container = document.getElementById('account-content-container');
@@ -119,33 +95,19 @@ async function renderUserItemCards(parentElement) {
     let itemcards = await callApiGetUserItemCards();
 
     await itemcards.forEach((card, index) => {
-        const cardWrapper = build.withClassCreateDiv(`item-inventory-card-${index}`, "item-inventory-card");
-        const cardHeader = build.withClassCreateDiv(`item-inventory-card-header-${index}`, 'item-inventory-card-header');
-        const cardName = build.withClassCreateP(card.name, `item-inventory-card-name-${index}`, 'item-inventory-card-name');
-        const requiredLvl = build.withClassCreateP(
-            `Req Lvl: ${card.requiredLvl}`, `item-inventory-card-reqLvl-${index}`, 'item-inventory-reqLvl');
-        cardHeader.appendChild(cardName);
-        cardHeader.appendChild(requiredLvl);
-        cardWrapper.appendChild(cardHeader);
+        const renderItemCard = new ItemCard(
+            card.imgData, 
+            card.name, 
+            card.description, 
+            card.requiredLvl, 
+            "",
+            card.strengthMod,
+            card.intellegenceMod,
+            card.dexterityMod,
+            card.wisdomMod
+        );
 
-        const cardDescription = build.withClassCreateP(card.description, 
-            `item-inventory-card-description-${index}`, 'item-inventory-card-description');
-        cardWrapper.appendChild(cardDescription);
-
-        const strMod = build.withClassCreateP(
-            `Strength Mod: ${card.strengthMod}`, `item-inventory-card-strMod-${index}`, 'item-inventory-modifer');
-        const intelMod = build.withClassCreateP(
-            `Intellegence Mod: ${card.intellegenceMod}`, `item-inventory-card-intMod-${index}`, 'item-inventory-modifer');
-        const dexMod = build.withClassCreateP(
-            `Dexterity Mod: ${card.dexterityMod}`, `item-inventory-card-dexMod-${index}`, 'item-inventory-modifer');
-        const wisMod = build.withClassCreateP(
-            `Wisdom Mod: ${card.wisdomMod}`, `item-inventory-card-wisMod-${index}`, 'item-inventory-modifer');
-        cardWrapper.appendChild(strMod);
-        cardWrapper.appendChild(intelMod);
-        cardWrapper.appendChild(dexMod);
-        cardWrapper.appendChild(wisMod);
-
-        parentElement.appendChild(cardWrapper);
+        renderItemCard.renderMiniCard(parentElement, index);
     });
 }
 

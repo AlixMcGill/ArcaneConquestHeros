@@ -21,13 +21,32 @@ namespace Backend.endpoints
                     async (int userId, [FromServices] NpgsqlConnection connection) => 
             {
                 var userItems = await connection.QueryAsync<ItemsDto>(@"
-                        SELECT items.*
+                        SELECT items.id, name, description, encode(imgdata, 'base64') AS imgdata, requiredlvl, strengthmod, intellegencemod, dexteritymod, wisdommod
                         FROM items
                         JOIN iteminventory ON items.id = iteminventory.itemid
                         WHERE iteminventory.userid = UserId;", new {UserId = userId});
 
                 return Results.Ok(userItems);
             });
+
+            group.MapPost("/ItemCardInventory", 
+                    async (ItemsDto newItem, [FromServices] NpgsqlConnection connection) =>
+            {
+                var item = await connection.ExecuteAsync(@"
+                        INSERT INTO items (name, description, imgdata, requiredlvl, strengthmod, intellegencemod, dexteritymod, wisdommod)
+                        VALUES (
+                            @Name,
+                            @Description,
+                            decode(@ImgData, 'base64'),
+                            @RequiredLvl,
+                            @StrengthMod,
+                            @IntellegenceMod,
+                            @DexterityMod,
+                            @WisdomMod)", newItem);
+
+                return Results.Ok(item);
+            });
+
             
             group.MapGet("/HeroCardsInventory/{userId}", 
                     //[Authorize] 
