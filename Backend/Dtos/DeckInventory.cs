@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Backend.Dtos;
 
-public class DeckInventory
+public class DeckInventoryDto
 {
     public int? id                        { get; set; }
     [Required] public int? UserId         { get; set; }

@@ -1,43 +1,19 @@
 import builder from './Modules/builder.js';
 import Cookies from './Modules/cookies.js';
 import hostaddress from './Modules/hostaddress.js';
+import HeroCard from './Modules/heroCard.js';
+import ItemCard from './Modules/itemCard.js';
 
 const build = new builder;
 const hostadd = new hostaddress;
 const cookies = new Cookies;
 
-class cardObject {
-    constructor(
-        heroIcon, 
-        name, 
-        cardLvl,
-        cardExp,
-        cardClass,
-        strengthStat,
-        intellegenceStat,
-        dexterityStat,
-        wisdomStat,
-        itemHeldName
-    ) {
-        this.heroIcon = heroIcon;
-        this.cardName = name;
-        this.cardLvl = cardLvl;
-        this.cardExp = cardExp;
-        this.cardClass = cardClass;
-        this.strengthStat = strengthStat;
-        this.intellegenceStat = intellegenceStat;
-        this.dexterityStat = dexterityStat;
-        this.wisdomStat = wisdomStat;
-        this.itemHeldName = itemHeldName;
-    }
 
-    renderMini() {
-
-    }
-
-    renderFull() {
-
-    }
+// arrays of all information to be displayed on the page
+const userData = {
+    deckData: {},
+    heroData: [],
+    itemData: []
 }
 
 function clearAllItems() {
@@ -53,6 +29,35 @@ function highlightCurrentTab(tabToHighlight, arrayOfTabs) {
     tabToHighlight.classList.add('highlighted-tab');
 }
 
+async function getUserInventoryData() {
+    console.log(cookies.getCookieByName('UserId'))
+    const userId =  cookies.getCookieByName('UserId');
+    const url = `${hostadd.address}/UserData/AllUserAccountData/${userId}`
+    try {
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(`Response Status: ${response.status}`);
+        }
+
+        if (response.ok) {
+            userData.deckData = data.deckInv;
+            userData.heroData = data.heroInv;
+            userData.itemData = data.itemInv;
+        }
+
+    } catch (error) {
+       console.error(error.message);
+    }
+}
+
 function renderMyAccountSettings(parentElement) {
     const cooke = new Cookies;
     const container = build.createDiv();
@@ -64,88 +69,43 @@ function renderMyAccountSettings(parentElement) {
 }
 
 async function renderUserDecks() { 
-    try {
-        const response = await fetch(url, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error(`Response Status: ${response.status}`);
-        }
-
-        if (response.ok) {
-        }
-
-    } catch (error) {
-       console.error(error.message);
-    }
 }
 
-function renderUserHeroCards() {
+function renderUserHeroCards(parentElement) {
+    userData.heroData.forEach((card, index) => {
+        const renderHeroCard = new HeroCard(
+            "", // Img goes here
+            card.name,
+            card.lvl,
+            card.currentExp,
+            card.nextLvlExp,
+            card.class,
+            card.strengthStat,
+            card.intellegenceStat,
+            card.dexterityStat,
+            card.wisdomStat,
+            "Placeholder", // Create a function to find the item name
+        );
 
+        renderHeroCard.renderInventoryHeroCard(parentElement, index);
+    });
 }
 
-async function callApiGetUserItemCards() {
-    console.log(cookies.getCookieByName('UserId'))
-    const userId =  cookies.getCookieByName('UserId');
-    const url = `${hostadd.address}/UserData/ItemCardInventory/${userId}`
-    try {
-        const response = await fetch(url, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
+function renderUserItemCards(parentElement) {
+    userData.itemData.forEach((card, index) => {
+        const renderItemCard = new ItemCard(
+            card.imgData, 
+            card.name, 
+            card.description, 
+            card.requiredLvl, 
+            "",
+            card.strengthMod,
+            card.intellegenceMod,
+            card.dexterityMod,
+            card.wisdomMod
+        );
 
-        const ItemCards = await response.json();
-
-        if (!response.ok) {
-            throw new Error(`Response Status: ${response.status}`);
-        }
-
-        if (response.ok) {
-            return ItemCards;
-        }
-
-    } catch (error) {
-       console.error(error.message);
-    }
-}
-
-async function renderUserItemCards(parentElement) {
-    let itemcards = await callApiGetUserItemCards();
-
-    await itemcards.forEach((card, index) => {
-        const cardWrapper = build.withClassCreateDiv(`item-inventory-card-${index}`, "item-inventory-card");
-        const cardHeader = build.withClassCreateDiv(`item-inventory-card-header-${index}`, 'item-inventory-card-header');
-        const cardName = build.withClassCreateP(card.name, `item-inventory-card-name-${index}`, 'item-inventory-card-name');
-        const requiredLvl = build.withClassCreateP(
-            `Req Lvl: ${card.requiredLvl}`, `item-inventory-card-reqLvl-${index}`, 'item-inventory-reqLvl');
-        cardHeader.appendChild(cardName);
-        cardHeader.appendChild(requiredLvl);
-        cardWrapper.appendChild(cardHeader);
-
-        const cardDescription = build.withClassCreateP(card.description, 
-            `item-inventory-card-description-${index}`, 'item-inventory-card-description');
-        cardWrapper.appendChild(cardDescription);
-
-        const strMod = build.withClassCreateP(
-            `Strength Mod: ${card.strengthMod}`, `item-inventory-card-strMod-${index}`, 'item-inventory-modifer');
-        const intelMod = build.withClassCreateP(
-            `Intellegence Mod: ${card.intellegenceMod}`, `item-inventory-card-intMod-${index}`, 'item-inventory-modifer');
-        const dexMod = build.withClassCreateP(
-            `Dexterity Mod: ${card.dexterityMod}`, `item-inventory-card-dexMod-${index}`, 'item-inventory-modifer');
-        const wisMod = build.withClassCreateP(
-            `Wisdom Mod: ${card.wisdomMod}`, `item-inventory-card-wisMod-${index}`, 'item-inventory-modifer');
-        cardWrapper.appendChild(strMod);
-        cardWrapper.appendChild(intelMod);
-        cardWrapper.appendChild(dexMod);
-        cardWrapper.appendChild(wisMod);
-
-        parentElement.appendChild(cardWrapper);
+        renderItemCard.renderMiniCard(parentElement, index);
     });
 }
 
@@ -162,22 +122,30 @@ accountBtn.addEventListener('click', () => {
     clearAllItems();
     highlightCurrentTab(accountBtn, allTabs);
     renderMyAccountSettings(contentContainer);
+    contentContainer.classList = 'account-bg-styles account-container roboto-regular';
 });
 
 decksBtn.addEventListener('click', () => {
     clearAllItems();
     highlightCurrentTab(decksBtn, allTabs);
     renderUserDecks();
+    contentContainer.classList = 'account-bg-styles account-container roboto-regular';
 });
 
 heroCardsBtn.addEventListener('click', () => {
     clearAllItems();
     highlightCurrentTab(heroCardsBtn, allTabs);
-    renderUserHeroCards();
+    renderUserHeroCards(contentContainer);
+    contentContainer.classList = 'account-bg-styles account-container-hero-cards roboto-regular';
 });
 
 itemCardsBtn.addEventListener('click', () => {
     clearAllItems();
     highlightCurrentTab(itemCardsBtn, allTabs);
     renderUserItemCards(contentContainer);
+    contentContainer.classList = 'account-bg-styles account-container roboto-regular';
 });
+
+window.onload = async () => {
+    await getUserInventoryData();
+}

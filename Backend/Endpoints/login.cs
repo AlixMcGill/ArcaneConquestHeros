@@ -20,7 +20,7 @@ public static class Login
                 [AllowAnonymous] 
                 async (UserDto currentUser, HttpContext ctx, [FromServices] NpgsqlConnection connection) =>
             {
-                int userLoginTimeInDays = 1;
+                int userLoginTimeInDays = 5;
                 var sanitizer = new Sanitizer();
 
                 if(!sanitizer.CheckForInvalidCharacters(currentUser.Email) ||
