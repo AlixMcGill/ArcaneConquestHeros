@@ -48,27 +48,30 @@ namespace Backend.endpoints
             });
 
             
-            group.MapGet("/HeroCardsInventory/{userId}", 
+            group.MapGet("/AllUserAccountData/{userId}", 
                     //[Authorize] 
-                    async ([FromServices] NpgsqlConnection connection) => 
+                    async (int userId, [FromServices] NpgsqlConnection connection) => 
             {
-                
-            });
-            
-            group.MapGet("/UserInformation/{userId}", 
-                    //[Authorize] 
-                    async ([FromServices] NpgsqlConnection connection) => 
-            {
-                
-            });
-            
-            group.MapGet("/UserDecks/Inventory{userId}", 
-                    //[Authorize] 
-                    async ([FromServices] NpgsqlConnection connection) => 
-            {
-                
-            });
 
+                var sql = @"
+                    SELECT * FROM deckinventory WHERE deckinventory.userid = @UserId;
+                    SELECT * FROM heroinventory WHERE heroinventory.userid = @UserId;
+                    SELECT items.id, name, description, encode(imgdata, 'base64') AS imgdata, requiredlvl, strengthmod, intellegencemod, dexteritymod, wisdommod
+                        FROM items
+                        JOIN iteminventory ON items.id = iteminventory.itemid
+                        WHERE iteminventory.userid = @UserId;
+                ";
+
+                using (var multi = await connection.QueryMultipleAsync(sql, new {UserId = userId}))
+                {   
+                    var deckInv = await multi.ReadAsync<DeckInventoryDto>();
+                    var heroInv = await multi.ReadAsync<HeroInventoryDto>();
+                    var itemInv = await multi.ReadAsync<ItemsDto>();
+
+                    return Results.Ok(new {deckInv, heroInv, itemInv});
+                }
+            });
+            
             return group;
         }
     }

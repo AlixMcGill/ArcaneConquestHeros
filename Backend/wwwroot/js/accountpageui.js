@@ -10,11 +10,11 @@ const cookies = new Cookies;
 
 
 // arrays of all information to be displayed on the page
-const allUserInformation = [];
-const allUserDecks = [];
-const allUserHeroCars = [];
-const allUserItemCards = [];
-
+const userData = {
+    deckData: {},
+    heroData: [],
+    itemData: []
+}
 
 function clearAllItems() {
     const container = document.getElementById('account-content-container');
@@ -29,6 +29,35 @@ function highlightCurrentTab(tabToHighlight, arrayOfTabs) {
     tabToHighlight.classList.add('highlighted-tab');
 }
 
+async function getUserInventoryData() {
+    console.log(cookies.getCookieByName('UserId'))
+    const userId =  cookies.getCookieByName('UserId');
+    const url = `${hostadd.address}/UserData/AllUserAccountData/${userId}`
+    try {
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(`Response Status: ${response.status}`);
+        }
+
+        if (response.ok) {
+            userData.deckData = data.deckInv;
+            userData.heroData = data.heroInv;
+            userData.itemData = data.itemInv;
+        }
+
+    } catch (error) {
+       console.error(error.message);
+    }
+}
+
 function renderMyAccountSettings(parentElement) {
     const cooke = new Cookies;
     const container = build.createDiv();
@@ -40,61 +69,30 @@ function renderMyAccountSettings(parentElement) {
 }
 
 async function renderUserDecks() { 
-    try {
-        const response = await fetch(url, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error(`Response Status: ${response.status}`);
-        }
-
-        if (response.ok) {
-        }
-
-    } catch (error) {
-       console.error(error.message);
-    }
 }
 
-function renderUserHeroCards() {
+function renderUserHeroCards(parentElement) {
+    userData.heroData.forEach((card, index) => {
+        const renderHeroCard = new HeroCard(
+            "", // Img goes here
+            card.name,
+            card.lvl,
+            card.currentExp,
+            card.nextLvlExp,
+            card.class,
+            card.strengthStat,
+            card.intellegenceStat,
+            card.dexterityStat,
+            card.wisdomStat,
+            "Placeholder", // Create a function to find the item name
+        );
 
+        renderHeroCard.renderInventoryHeroCard(parentElement, index);
+    });
 }
 
-async function callApiGetUserItemCards() {
-    console.log(cookies.getCookieByName('UserId'))
-    const userId =  cookies.getCookieByName('UserId');
-    const url = `${hostadd.address}/UserData/ItemCardInventory/${userId}`
-    try {
-        const response = await fetch(url, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
-
-        const ItemCards = await response.json();
-
-        if (!response.ok) {
-            throw new Error(`Response Status: ${response.status}`);
-        }
-
-        if (response.ok) {
-            return ItemCards;
-        }
-
-    } catch (error) {
-       console.error(error.message);
-    }
-}
-
-async function renderUserItemCards(parentElement) {
-    let itemcards = await callApiGetUserItemCards();
-
-    await itemcards.forEach((card, index) => {
+function renderUserItemCards(parentElement) {
+    userData.itemData.forEach((card, index) => {
         const renderItemCard = new ItemCard(
             card.imgData, 
             card.name, 
@@ -124,22 +122,30 @@ accountBtn.addEventListener('click', () => {
     clearAllItems();
     highlightCurrentTab(accountBtn, allTabs);
     renderMyAccountSettings(contentContainer);
+    contentContainer.classList = 'account-bg-styles account-container roboto-regular';
 });
 
 decksBtn.addEventListener('click', () => {
     clearAllItems();
     highlightCurrentTab(decksBtn, allTabs);
     renderUserDecks();
+    contentContainer.classList = 'account-bg-styles account-container roboto-regular';
 });
 
 heroCardsBtn.addEventListener('click', () => {
     clearAllItems();
     highlightCurrentTab(heroCardsBtn, allTabs);
-    renderUserHeroCards();
+    renderUserHeroCards(contentContainer);
+    contentContainer.classList = 'account-bg-styles account-container-hero-cards roboto-regular';
 });
 
 itemCardsBtn.addEventListener('click', () => {
     clearAllItems();
     highlightCurrentTab(itemCardsBtn, allTabs);
     renderUserItemCards(contentContainer);
+    contentContainer.classList = 'account-bg-styles account-container roboto-regular';
 });
+
+window.onload = async () => {
+    await getUserInventoryData();
+}
