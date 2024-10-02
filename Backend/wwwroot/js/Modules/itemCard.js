@@ -44,13 +44,6 @@ export default class cardObject {
         itemCardHeader.appendChild(itemCardReqLvl);
         itemCardWrapper.appendChild(itemCardHeader);
 
-        const itemCardImg = document.createElement('img');
-        itemCardImg.id = `item-inventory-card-img-${index}`;
-        itemCardImg.classList = 'item-inventory-img';
-        itemCardImg.src = `data:image/png;base64, ${this.img}`;
-
-        itemCardWrapper.appendChild(itemCardImg);
-
         const itemCardDesc = document.createElement('p');
         itemCardDesc.innerText = this.description;
         itemCardDesc.id = `item-inventory-card-description-${index}`;
@@ -62,6 +55,13 @@ export default class cardObject {
     }
 
     renderFullCard() {
+
+        const itemCardImg = document.createElement('img');
+        itemCardImg.id = `item-inventory-card-img-${index}`;
+        itemCardImg.classList = 'item-inventory-img';
+        itemCardImg.src = `data:image/png;base64, ${this.img}`;
+
+        itemCardWrapper.appendChild(itemCardImg);
         
         const strMod = build.withClassCreateP(
             `Strength Mod: ${this.strengthMod}`, 

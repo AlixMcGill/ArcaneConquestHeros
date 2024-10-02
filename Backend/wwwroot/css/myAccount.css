@@ -65,14 +65,12 @@
     align-items: center;
     justify-content: space-around;
     padding: .5rem;
+    margin-bottom: .5rem;
     border-bottom: 1px solid rgba(0,0,0,.4);
 }
 
-.hero-inventory-expand-button {
-    width: 1rem;
-    height: 1.5rem;
-    border-radius: .2rem;
-    border: 2px solid black;
+.hero-inventory-card:hover {
+    cursor: pointer;
 }
 
 /* Inventory Cards */
@@ -80,41 +78,23 @@
 .item-inventory-card {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    margin: .3rem;
-    padding: 1rem;
-    width: 15%;
-    height: 20rem;
-    background-color: white;
-    border-radius: 1rem;
-    box-shadow: 1px 1px 8px rgba(0,0,0,.2);
+    align-items: center;
+    justify-content: space-around;
+    padding: .5rem;
+    margin-bottom: .5rem;
+    border-bottom: 1px solid rgba(0,0,0,.4);
 }
 
-@media (max-width: 1500px) {
-    .item-inventory-card {
-        width: 40%;
-    }
+.item-inventory-card:hover {
+    cursor: pointer;
 }
 
 .item-inventory-card-header {
-    width: 100%;
     display: flex;
-    justify-content: space-between;
+    width: 100%;
+    justify-content: space-around;
+    margin-bottom: 1rem;
 }
 
-.item-inventory-card-name {
-    font-weight: 800;
-}
 
-.item-inventory-card-img {
-    max-width: 240px;
-    width: 2px;
-    margin: 1rem;
-    justify-self: center;
-    object-fit: contain;
-}
 
-.item-inventory-card-description {
-    align-self: center;
-    margin-bottom: .5rem;
-}

@@ -11,7 +11,7 @@ const cookies = new Cookies;
 
 // arrays of all information to be displayed on the page
 const userData = {
-    deckData: {},
+    deckData: [],
     heroData: [],
     itemData: []
 }
@@ -30,7 +30,6 @@ function highlightCurrentTab(tabToHighlight, arrayOfTabs) {
 }
 
 async function getUserInventoryData() {
-    console.log(cookies.getCookieByName('UserId'))
     const userId =  cookies.getCookieByName('UserId');
     const url = `${hostadd.address}/UserData/AllUserAccountData/${userId}`
     try {
@@ -143,7 +142,7 @@ itemCardsBtn.addEventListener('click', () => {
     clearAllItems();
     highlightCurrentTab(itemCardsBtn, allTabs);
     renderUserItemCards(contentContainer);
-    contentContainer.classList = 'account-bg-styles account-container roboto-regular';
+    contentContainer.classList = 'account-bg-styles account-container-item-cards roboto-regular';
 });
 
 window.onload = async () => {

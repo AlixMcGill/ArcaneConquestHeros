@@ -30,9 +30,6 @@ export default class renderHeroCard {
         const wrapperClass = 'hero-inventory-card';
         const wrapperId = `hero-inventory-card-${index}`;
 
-        const expandButtonClass = 'hero-inventory-expand-button';
-        const expandButtonId = `hero-inventory-expand-button-${index}`;
-
         const heroNameClass = 'hero-inventory-name';
         const heroNameId = `hero-inventory-name-${index}`;
 
@@ -51,12 +48,6 @@ export default class renderHeroCard {
         const heroCardWrapper = document.createElement('div');
         heroCardWrapper.id = wrapperId;
         heroCardWrapper.classList = wrapperClass;
-
-        const expandButton = document.createElement('button');
-        expandButton.id = expandButtonId;
-        expandButton.classList = expandButtonClass;
-
-        heroCardWrapper.appendChild(expandButton);
 
         const heroCardName = document.createElement('p');
         heroCardName.id = heroNameId;
