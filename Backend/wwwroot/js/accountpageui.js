@@ -3,6 +3,7 @@ import Cookies from './Modules/cookies.js';
 import hostaddress from './Modules/hostaddress.js';
 import HeroCard from './Modules/heroCard.js';
 import ItemCard from './Modules/itemCard.js';
+import DeckCards from './Modules/deckCards.js';
 
 const build = new builder;
 const hostadd = new hostaddress;
@@ -67,7 +68,19 @@ function renderMyAccountSettings(parentElement) {
 
 }
 
-async function renderUserDecks() { 
+function renderUserDecks(parentElement) { 
+    const deckCard = new DeckCards;
+    const numOfDecks = userData.deckData.length;
+    deckCard.renderDeckOptions(parentElement, numOfDecks);
+
+    const createNewDeckBtn = document.getElementById('deck-options-new-id');
+
+    createNewDeckBtn.addEventListener('click', () => { createNewDeck(parentElement) });
+}
+
+function createNewDeck(parentElement) {
+    const deckCard = new DeckCards;
+    deckCard.createNewDeckWindow(parentElement);
 }
 
 function renderUserHeroCards(parentElement) {
@@ -121,14 +134,14 @@ accountBtn.addEventListener('click', () => {
     clearAllItems();
     highlightCurrentTab(accountBtn, allTabs);
     renderMyAccountSettings(contentContainer);
-    contentContainer.classList = 'account-bg-styles account-container roboto-regular';
+    contentContainer.classList = 'account-bg-styles account-container-account-settings roboto-regular';
 });
 
 decksBtn.addEventListener('click', () => {
     clearAllItems();
     highlightCurrentTab(decksBtn, allTabs);
-    renderUserDecks();
-    contentContainer.classList = 'account-bg-styles account-container roboto-regular';
+    renderUserDecks(contentContainer);
+    contentContainer.classList = 'account-bg-styles account-container-decks roboto-regular';
 });
 
 heroCardsBtn.addEventListener('click', () => {
