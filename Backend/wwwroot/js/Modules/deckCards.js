@@ -1,5 +1,6 @@
 export default class DeckCards {
     constructor() {
+        this.currentHero;
     }
 
     renderDeckOptions(parentElement, numberOfDecks) {
@@ -37,7 +38,9 @@ export default class DeckCards {
         
     }
 
-    createNewDeckWindow(parentElement) {
+    createNewDeckWindow(parentElement, addNewHero) {
+
+        const numOfCardsPerDeck = 10;
 
         const wrapperId = 'create-new-deck-wrapper-id';
         const wrapperClass = 'create-new-deck-wrapper'
@@ -63,6 +66,10 @@ export default class DeckCards {
         const createDeckDescriptionId = 'create-new-deck-description-id';
         const createDeckDescriptionClass = 'create-new-deck-description';
         const createDeckDescriptionPlaceholder = 'Deck Description';
+
+        const createDeckBtnId = 'create-deck-button-id';
+        const createDeckBtnClass = 'create-deck-button';
+        const createDeckBtnInnerText = 'Create Deck';
 
         const wrapper = document.createElement('div');
         wrapper.id = wrapperId;
@@ -111,6 +118,67 @@ export default class DeckCards {
         createDeckDescription.placeholder = createDeckDescriptionPlaceholder;
 
         deckOptionsWrapper.appendChild(createDeckDescription);
+
+        for (let i = 0; i < numOfCardsPerDeck; i++) {
+            const deckCardWrapperId = `deck-card-wrapper-id-${i}`;
+            const deckCardWrapperClass = 'deck-card-wrapper';
+
+            const addHeroBtnId = `add-hero-button-id-${i}`;
+            const addHeroBtnClass = 'add-hero-button';
+            const addHeroBtnInnerText = 'Add New Hero';
+
+            const deckCardWrapper = document.createElement('div');
+            deckCardWrapper.id = deckCardWrapperId;
+            deckCardWrapper.classList = deckCardWrapperClass;
+            
+            const addHeroBtn = document.createElement('button');
+            addHeroBtn.id = addHeroBtnId;
+            addHeroBtn.classList = addHeroBtnClass;
+            addHeroBtn.innerText = addHeroBtnInnerText;
+
+            addHeroBtn.addEventListener('click', () => {
+
+                const allCardWrappers = document.querySelectorAll(`.${deckCardWrapperClass}`);
+
+                [...allCardWrappers].forEach((card) => {
+                    card.classList = deckCardWrapperClass;
+                });
+
+                deckCardWrapper.classList.add('selected-item-for-hero-insertion');
+                
+                // using this.id does not work in the given context
+                const buttonId = event.target.id; 
+                  
+                const selectHeroWrapperId = 'select-hero-wrapper-id';
+                const selectHeroWrapperClass = 'select-hero-wrapper';
+
+                const heroWrapper = document.getElementById(selectHeroWrapperId);
+                
+                if (heroWrapper != null) heroWrapper.remove();
+
+                const selectHeroWrapper = document.createElement('div');
+                selectHeroWrapper.id = selectHeroWrapperId;
+                selectHeroWrapper.classList = selectHeroWrapperClass;
+
+                wrapper.appendChild(selectHeroWrapper);
+
+                addNewHero(buttonId);
+            });
+
+            deckCardWrapper.appendChild(addHeroBtn);
+            deckOptionsWrapper.appendChild(deckCardWrapper);
+        }
+
+        const createDeckBtn = document.createElement('button');
+        createDeckBtn.id = createDeckBtnId;
+        createDeckBtn.classList = createDeckBtnClass;
+        createDeckBtn.innerText = createDeckBtnInnerText;
+
+        createDeckBtn.addEventListener('click', () => {
+            console.log('this creates a new deck');
+        });
+
+        deckOptionsWrapper.appendChild(createDeckBtn);
 
         parentElement.appendChild(wrapper);
     }

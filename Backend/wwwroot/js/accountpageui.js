@@ -80,7 +80,39 @@ function renderUserDecks(parentElement) {
 
 function createNewDeck(parentElement) {
     const deckCard = new DeckCards;
-    deckCard.createNewDeckWindow(parentElement);
+    deckCard.createNewDeckWindow(parentElement, selectHeroForDeck);
+}
+
+function selectHeroForDeck(buttonId) {
+    const selectHeroWrapper = document.getElementById('select-hero-wrapper-id');
+
+    renderUserHeroCards(selectHeroWrapper);
+
+    const allInventoryCards = document.querySelectorAll('.hero-inventory-card');
+
+    // implement remove all currently used cards in the deck
+
+    [...allInventoryCards].forEach((card) => {
+        card.addEventListener('click', () => {
+            const button = document.getElementById(buttonId);
+            const buttonParent = build.getParentById(buttonId);
+
+            buttonParent.appendChild(card);
+            button.style.display = 'none';
+
+            const removeButton = document.createElement('button');
+            removeButton.classList = 'remove-element-button';
+            removeButton.innerText = 'Remove Card';
+
+            removeButton.addEventListener('click', () => {
+                button.style.display = 'block';
+                card.remove();
+                removeButton.remove();
+            });
+
+            buttonParent.appendChild(removeButton)
+        }, { once: true });
+    });
 }
 
 function renderUserHeroCards(parentElement) {
@@ -160,4 +192,5 @@ itemCardsBtn.addEventListener('click', () => {
 
 window.onload = async () => {
     await getUserInventoryData();
+    console.log(userData);
 }

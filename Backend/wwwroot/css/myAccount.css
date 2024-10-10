@@ -109,3 +109,19 @@
 .deck-options-new {
     padding: .5rem;
 }
+
+/* New Deck Popup */
+
+.create-new-deck-wrapper {
+    position: absolute;
+    margin: 0rem 1rem 1rem 0rem;
+}
+
+.create-new-deck-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.select-hero-wrapper {
+    position: absolute;
+}

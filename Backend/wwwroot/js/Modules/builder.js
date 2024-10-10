@@ -112,4 +112,14 @@ export default class builder {
         input.classList = classList;
         return input;
     }
+
+    getParentById(childId) {
+        const child = document.getElementById(childId);
+        if (child) {
+            return child.parentElement;
+        } else {
+            console.error('Child element not found');
+            return null;
+        }
+    }
 }
