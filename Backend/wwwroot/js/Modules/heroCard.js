@@ -1,5 +1,6 @@
 export default class renderHeroCard {
     constructor(
+        databaseId,
         heroImg, 
         name, 
         cardLvl,
@@ -12,6 +13,7 @@ export default class renderHeroCard {
         wisdomStat,
         itemHeldName
     ) {
+        this.databaseId = databaseId;
         this.heroImg = heroImg;
         this.cardName = name;
         this.cardLvl = cardLvl;
@@ -48,6 +50,7 @@ export default class renderHeroCard {
         const heroCardWrapper = document.createElement('div');
         heroCardWrapper.id = wrapperId;
         heroCardWrapper.classList = wrapperClass;
+        heroCardWrapper.setAttribute('database-id', this.databaseId);
 
         const heroCardName = document.createElement('p');
         heroCardName.id = heroNameId;
