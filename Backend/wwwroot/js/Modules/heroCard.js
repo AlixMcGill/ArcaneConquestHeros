@@ -52,6 +52,10 @@ export default class renderHeroCard {
         heroCardWrapper.classList = wrapperClass;
         heroCardWrapper.setAttribute('database-id', this.databaseId);
 
+        heroCardWrapper.addEventListener('click', () => {
+            this.renderFullCard(heroCardWrapper, index);
+        });
+
         const heroCardName = document.createElement('p');
         heroCardName.id = heroNameId;
         heroCardName.classList = heroNameClass;
@@ -69,7 +73,13 @@ export default class renderHeroCard {
         const heroCardExpNum = document.createElement('p');
         heroCardExpNum.id = heroExpNumId;
         heroCardExpNum.classList = heroExpNumClass;
-        heroCardExpNum.innerText = `Exp: (${this.cardExp}/${this.cardExpNextLvl})`;
+
+        if (this.cardExp >= this.cardExpNextLvl) {
+            heroCardWrapper.classList.add('hero-card-lvl-up');
+            heroCardExpNum.innerText = 'Exp: Lvl Up Availible'
+        } else {
+            heroCardExpNum.innerText = `Exp: (${this.cardExp}/${this.cardExpNextLvl})`;
+        }
 
         heroCardWrapper.appendChild(heroCardExpNum);
 
@@ -114,9 +124,24 @@ export default class renderHeroCard {
 
         const heroImgClass = 'full-hero-inventory-img';
         const heroImgId = `full-hero-inventory-img-${index}`;
+        
+        const heroClassClass = 'hero-inventory-class';
+        const heroClassId = `hero-inventory-class-${index}`;
 
         const heroItemHeldClass = 'full-hero-inventory-item-held';
         const heroItemHeldId = `full-hero-inventory-item-held-${index}`;
+
+        const heroStrengthStatClass = 'full-hero-inventory-strength-stat full-hero-inventory-stat';
+        const heroStrentgthStatId = `full-hero-inventory-strength-stat-${index}`;
+
+        const heroDexterityStatClass = 'full-hero-inventory-dexterity-stat full-hero-inventory-stat';
+        const heroDexteritystatId = `full-hero-invenotry-dexterity-stat-${index}`;
+
+        const heroIntellegenceStatClass = 'full-hero-inventory-intellegence-stat full-hero-inventory-stat';
+        const heroIntellegenceStatId = `full-hero-inventory-intellegence-stat-${index}`;
+
+        const heroWisdomStatClass = 'full-hero-inventory-wisdom-stat full-hero-inventory-stat';
+        const heroWisdomStatId = `full-hero-inventory-wisdom-stat-${index}`;
 
 
         const expPercentage = this.cardExp / this.cardExpNextLvl * 100;
@@ -125,6 +150,11 @@ export default class renderHeroCard {
         const heroCardWrapper = document.createElement('div');
         heroCardWrapper.id = wrapperId;
         heroCardWrapper.classList = wrapperClass;
+        heroCardWrapper.setAttribute('database-id', this.databaseId);
+
+        heroCardWrapper.addEventListener('mouseleave', () => {
+            heroCardWrapper.remove();
+        });
 
         const heroCardHeader = document.createElement('div');
         heroCardHeader.id = heroHeaderId;
@@ -157,7 +187,7 @@ export default class renderHeroCard {
         const heroCardExpNum = document.createElement('p');
         heroCardExpNum.id = heroExpNumId;
         heroCardExpNum.classList = heroExpNumClass;
-        heroCardExpNum.innerText = `(${this.cardExp}/${this.cardExpNextLvl})`;
+        heroCardExpNum.innerText = `Exp: (${this.cardExp}/${this.cardExpNextLvl})`;
 
         heroCardExpWrapper.appendChild(heroCardExpNum);
         heroCardExpWrapper.appendChild(heroCardExpBar);
@@ -170,12 +200,207 @@ export default class renderHeroCard {
 
         heroCardWrapper.appendChild(heroCardImg);
 
+        const heroCardClass = document.createElement('p');
+        heroCardClass.id = heroClassId;
+        heroCardClass.classList = heroClassClass;
+        heroCardClass.innerText = `Class: ${this.cardClass}`;
+
+        heroCardWrapper.appendChild(heroCardClass);
+
         const heroCardItemHeld = document.createElement('p');
         heroCardItemHeld.id = heroItemHeldId;
         heroCardItemHeld.classList = heroItemHeldClass;
         heroCardItemHeld.innerText = `Item: ${this.itemHeldName}`;
 
         heroCardWrapper.appendChild(heroCardItemHeld);
+
+        const heroStrengthStat = document.createElement('p');
+        heroStrengthStat.id = heroStrentgthStatId;
+        heroStrengthStat.classList = heroStrengthStatClass;
+        heroStrengthStat.innerText = `Strength: ${this.strengthStat}`;
+   
+        const heroIntellegenceStat = document.createElement('p');
+        heroIntellegenceStat.id = heroIntellegenceStatId;
+        heroIntellegenceStat.classList = heroIntellegenceStatClass;
+        heroIntellegenceStat.innerText = `Intellegence: ${this.intellegenceStat}`;
+
+        const heroDexterityStat = document.createElement('p');
+        heroDexterityStat.id = heroDexteritystatId;
+        heroDexterityStat.classList = heroDexterityStatClass;
+        heroDexterityStat.innerText = `Dexterity: ${this.dexterityStat}`;
+
+        const heroWisdomStat = document.createElement('p');
+        heroWisdomStat.id = heroWisdomStatId;
+        heroWisdomStat.classList = heroWisdomStatClass;
+        heroWisdomStat.innerText = `Wisdom: ${this.wisdomStat}`;
+
+
+        if (this.cardExp >= this.cardExpNextLvl) {
+            
+            const maxStatPoints = 2;
+            let statPointsAvalible = 2;
+
+            const incrementIdentifyer = '+';
+            const decrementIdentifyer = '-';
+
+            const statPointSpan = document.createElement('span');
+            statPointSpan.classList = 'full-hero-inventory-stat-point-span';
+            statPointSpan.innerText = statPointsAvalible;
+
+            // Strength Stat
+
+            const strengthStatWrapper = document.createElement('div');
+            strengthStatWrapper.id = `full-hero-inventory-strength-stat-wrapper-${index}`;
+            strengthStatWrapper.classList = 'full-hero-inventory-stat-wrapper full-hero-inventory-strength-stat-wrapper';
+
+            const strengthStatIncButton = document.createElement('button');
+            strengthStatIncButton.id = `full-hero-inventory-strength-stat-increment-button-id`;
+            strengthStatIncButton.classList = 'full-hero-inventory-increment-button full-hero-inventory-strength-stat-increment-button';
+            strengthStatIncButton.innerText = incrementIdentifyer;
+
+            strengthStatIncButton.addEventListener('click', () => {
+                if (statPointsAvalible <= 0) return;
+            });
+
+            const strengthStatDecButton = document.createElement('button');
+            strengthStatDecButton.id = `full-hero-inventory-strength-stat-decrement-button-id`;
+            strengthStatDecButton.classList = 'full-hero-inventory-decrement-button full-hero-inventory-strength-stat-decrement-button';
+            strengthStatDecButton.innerText = decrementIdentifyer;
+
+            strengthStatDecButton.addEventListener('click', () => { 
+                if (statPointsAvalible <= 0) return;
+            });
+
+            const strengthButtonWrapper = document.createElement('div');
+            strengthButtonWrapper.classList = 'full-hero-inventory-button-wrapper';
+
+            strengthButtonWrapper.appendChild(strengthStatDecButton);
+            strengthButtonWrapper.appendChild(statPointSpan);
+            strengthButtonWrapper.appendChild(strengthStatIncButton);
+
+            strengthStatWrapper.appendChild(heroStrengthStat);
+            strengthStatWrapper.appendChild(strengthButtonWrapper);
+            heroCardWrapper.appendChild(strengthStatWrapper);
+
+            // Intellegence Stat
+
+            const intellegenceStatWrapper = document.createElement('div');
+            intellegenceStatWrapper.id = `full-hero-inventory-intellegence-stat-wrapper-${index}`;
+            intellegenceStatWrapper.classList = 'full-hero-inventory-stat-wrapper full-hero-inventory-intellegence-stat-wrapper';
+
+            const intellegenceStatIncButton = document.createElement('button');
+            intellegenceStatIncButton.id = `full-hero-inventory-intellegence-stat-increment-button-${index}`;
+            intellegenceStatIncButton.classList = 'full-hero-inventory-increment-button full-hero-inventory-intellegence-stat-increment-button';
+            intellegenceStatIncButton.innerText = incrementIdentifyer;
+
+            intellegenceStatIncButton.addEventListener('click', () => {
+                if (statPointsAvalible <= 0) return;
+
+            });
+
+            const intellegenceStatDecButton = document.createElement('button');
+            intellegenceStatDecButton.id = `full-hero-inventory-intellegence-stat-decrement-button-${index}`;
+            intellegenceStatDecButton.classList = 'full-hero-inventory-decrement-button full-hero-inventory-intellegence-stat-decrement-button';
+            intellegenceStatDecButton.innerText = decrementIdentifyer;
+
+            intellegenceStatDecButton.addEventListener('click', () => {
+                if (statPointsAvalible <= 0) return;
+
+            });
+
+            const intellegenceButtonWrapper = document.createElement('div');
+            intellegenceButtonWrapper.classList = 'full-hero-inventory-button-wrapper';
+
+            intellegenceButtonWrapper.appendChild(intellegenceStatDecButton);
+            intellegenceButtonWrapper.appendChild(statPointSpan.cloneNode(true));
+            intellegenceButtonWrapper.appendChild(intellegenceStatIncButton);
+
+            intellegenceStatWrapper.appendChild(heroIntellegenceStat);
+            intellegenceStatWrapper.appendChild(intellegenceButtonWrapper);
+            heroCardWrapper.appendChild(intellegenceStatWrapper);
+
+            // Dexterity Stat
+
+            const dexterityStatWrapper = document.createElement('div');
+            dexterityStatWrapper.id = `full-hero-inventory-dexterity-stat-wrapper-${index}`;
+            dexterityStatWrapper.classList = 'full-hero-inventory-stat-wrapper full-hero-inventory-dexterity-stat-wrapper';
+
+            const dexterityStatIncButton = document.createElement('button');
+            dexterityStatIncButton.id = `full-hero-inventory-dexterity-stat-increment-button-${index}`;
+            dexterityStatIncButton.classList = 'full-hero-inventory-increment-button full-hero-inventory-dexterity-stat-increment-button';
+            dexterityStatIncButton.innerText = incrementIdentifyer;
+
+            dexterityStatIncButton.addEventListener('click', () => {
+                if (statPointsAvalible <= 0) return;
+
+            });
+
+            const dexterityStatDecButton = document.createElement('button');
+            dexterityStatDecButton.id = `full-hero-inventory-dexterity-stat-decrement-button-${index}`;
+            dexterityStatDecButton.classList = 'full-hero-inventory-decrement-button full-hero-inventory-dexterity-stat-decrement-button';
+            dexterityStatDecButton.innerText = decrementIdentifyer;
+
+            dexterityStatDecButton.addEventListener('click', () => {
+                if (statPointsAvalible <= 0) return;
+
+            });
+
+            const dexterityButtonWrapper = document.createElement('div');
+            dexterityButtonWrapper.classList = 'full-hero-inventory-button-wrapper';
+
+            dexterityButtonWrapper.appendChild(dexterityStatDecButton);
+            dexterityButtonWrapper.appendChild(statPointSpan.cloneNode(true));
+            dexterityButtonWrapper.appendChild(dexterityStatIncButton);
+
+            dexterityStatWrapper.appendChild(heroDexterityStat);
+            dexterityStatWrapper.appendChild(dexterityButtonWrapper);
+            heroCardWrapper.appendChild(dexterityStatWrapper);
+
+            // Wisdom Stat
+
+            const wisdomStatWrapper = document.createElement('div');
+            wisdomStatWrapper.id = `full-hero-inventory-wisdom-stat-wrapper-${index}`;
+            wisdomStatWrapper.classList = 'full-hero-inventory-stat-wrapper full-hero-inventory-wisdom-stat-wrapper';
+
+            const wisdomStatIncButton = document.createElement('button');
+            wisdomStatIncButton.id = `full-hero-inventory-wisdom-stat-increment-button-${index}`;
+            wisdomStatIncButton.classList = 'full-hero-inventory-increment-button full-hero-inventory-wisdom-stat-increment-button';
+            wisdomStatIncButton.innerText = incrementIdentifyer;
+
+            wisdomStatIncButton.addEventListener('click', () => {
+                if (statPointsAvalible <= 0) return;
+
+            });
+
+            const wisdomStatDecButton = document.createElement('button');
+            wisdomStatDecButton.id = `full-hero-inventory-wisdom-stat-decrement-button-${index}`;
+            wisdomStatDecButton.classList = 'full-hero-inventory-decrement-button full-hero-inventory-wisdom-stat-decrement-button';
+            wisdomStatDecButton.innerText = decrementIdentifyer;
+
+            wisdomStatDecButton.addEventListener('click', () => {
+                if (statPointsAvalible <= 0) return;
+
+            });
+
+            const wisdomButtonWrapper = document.createElement('div');
+            wisdomButtonWrapper.classList = 'full-hero-inventory-button-wrapper';
+
+            wisdomButtonWrapper.appendChild(wisdomStatDecButton);
+            wisdomButtonWrapper.appendChild(statPointSpan.cloneNode(true));
+            wisdomButtonWrapper.appendChild(wisdomStatIncButton);
+
+            wisdomStatWrapper.appendChild(heroWisdomStat);
+            wisdomStatWrapper.appendChild(wisdomButtonWrapper);
+            heroCardWrapper.appendChild(wisdomStatWrapper);
+
+
+        } else { 
+            heroCardWrapper.appendChild(heroStrengthStat);
+            heroCardWrapper.appendChild(heroIntellegenceStat);
+            heroCardWrapper.appendChild(heroDexterityStat);
+            heroCardWrapper.appendChild(heroWisdomStat);
+        }
+
 
         parentElement.appendChild(heroCardWrapper);
     }

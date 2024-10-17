@@ -135,32 +135,38 @@ function newDeckData() {
 }
 
 function grabNewDeckData(deckLength, deckName, deckDescription) {
-            const heroCardInDeck = document.querySelectorAll('.hero-card-deck');
-            const allDeckCards = [...heroCardInDeck];
+    const heroCardInDeck = document.querySelectorAll('.hero-card-deck');
+    const allDeckCards = [...heroCardInDeck];
 
-            if (allDeckCards.length != deckLength) {
-                throw new Error(`${allDeckCards.length} number of cards in deck is not allowed`);
-            } else {
-                return {
-                    deckName: deckName,
-                    deckDescription: deckDescription,
-                    heroCardOne: parseInt(allDeckCards[0].getAttribute('database-id')),
-                    heroCardTwo: parseInt(allDeckCards[1].getAttribute('database-id')),
-                    heroCardThree: parseInt(allDeckCards[2].getAttribute('database-id')),
-                    heroCardFour: parseInt(allDeckCards[3].getAttribute('database-id')),
-                    heroCardFive: parseInt(allDeckCards[4].getAttribute('database-id')),
-                    heroCardSix: parseInt(allDeckCards[5].getAttribute('database-id')),
-                    heroCardSeven: parseInt(allDeckCards[6].getAttribute('database-id')),
-                    heroCardEight: parseInt(allDeckCards[7].getAttribute('database-id')),
-                    heroCardNine: parseInt(allDeckCards[8].getAttribute('database-id')),
-                    heroCardTen: parseInt(allDeckCards[9].getAttribute('database-id')),
-                };
-            }            
-
+    if (allDeckCards.length != deckLength) {
+        throw new Error(`${allDeckCards.length} number of cards in deck is not allowed`);
+    } else {
+        return {
+            deckName: deckName,
+            deckDescription: deckDescription,
+            heroCardOne: parseInt(allDeckCards[0].getAttribute('database-id')),
+            heroCardTwo: parseInt(allDeckCards[1].getAttribute('database-id')),
+            heroCardThree: parseInt(allDeckCards[2].getAttribute('database-id')),
+            heroCardFour: parseInt(allDeckCards[3].getAttribute('database-id')),
+            heroCardFive: parseInt(allDeckCards[4].getAttribute('database-id')),
+            heroCardSix: parseInt(allDeckCards[5].getAttribute('database-id')),
+            heroCardSeven: parseInt(allDeckCards[6].getAttribute('database-id')),
+            heroCardEight: parseInt(allDeckCards[7].getAttribute('database-id')),
+            heroCardNine: parseInt(allDeckCards[8].getAttribute('database-id')),
+            heroCardTen: parseInt(allDeckCards[9].getAttribute('database-id')),
+        };
+    }            
 }
 
 async function postNewDeckData() {
+    const userId =  cookies.getCookieByName('UserId');
+    const url = `${hostadd.address}/UserData/AllUserAccountData/${userId}`
 
+    try {
+        
+    } catch (error) {
+       console.error(error.message);
+    }
 }
 
 function renderUserHeroCards(parentElement) {
@@ -242,5 +248,5 @@ itemCardsBtn.addEventListener('click', () => {
 
 window.onload = async () => {
     await getUserInventoryData();
-    console.log(userData);
+    console.log(userData); // remove this later when not useful
 }

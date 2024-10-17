@@ -29,7 +29,7 @@ namespace Backend.endpoints
                 return Results.Ok(userItems);
             });
 
-            group.MapPost("/ItemCardInventory", 
+            group.MapPost("/ItemCardInventory",// remove this endpoint later 
                     async (ItemsDto newItem, [FromServices] NpgsqlConnection connection) =>
             {
                 var item = await connection.ExecuteAsync(@"
@@ -70,6 +70,45 @@ namespace Backend.endpoints
 
                     return Results.Ok(new {deckInv, heroInv, itemInv});
                 }
+            });
+            
+            // inserts card data into database when the user creates a new deck
+            group.MapPost("/CreateNewDeck/{userId}",
+                //[Authorize]
+                async (int userId, DeckInventoryDto newDeck, [FromServices] NpgsqlConnection connection) =>
+            {
+                var deck = await connection.ExecuteAsync(@"
+                        INSERT INTO deckinventory (userid, name, description, heroidone, heroidtwo, heroidthree, heroidfour, heroidfive, heroidsix, heroidseven, heroideight, heroidnine, heroidten)
+                        VALUES (
+                            @UserId,
+                            @Name,
+                            @Description,
+                            @HeroIdOne,
+                            @HeroIdTwo,
+                            @HeroIdThree,
+                            @HeroIdFour,
+                            @HeroIdFive,
+                            @HeroIdSix,
+                            @HeroIdSeven,
+                            @HeroIdEight,
+                            @HeroIdNine,
+                            @HeroIdTen)", new {
+                        UserId = userId, 
+                        Name = newDeck.Name,
+                        Description = newDeck.Description,
+                        HeroIdOne = Convert.ToInt32(newDeck.HeroIdOne),
+                        HeroIdTwo = newDeck.HeroIdTwo,
+                        HeroIdThree = newDeck.HeroIdThree,
+                        HeroIdFour = newDeck.HeroIdFour,
+                        HeroIdFive = newDeck.HeroIdFive,
+                        HeroIdSix = newDeck.HeroIdSix,
+                        HeroIdSeven = newDeck.HeroIdSeven,
+                        HeroIdEight = newDeck.HeroIdEight,
+                        HeroIdNine = newDeck.HeroIdNine,
+                        HeroIdTen = newDeck.HeroIdTen
+                        });
+
+                return Results.Ok(deck);
             });
             
             return group;
