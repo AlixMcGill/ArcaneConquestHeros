@@ -1,5 +1,6 @@
 export default class cardObject {
     constructor(
+        databaseId,
         img, 
         name, 
         description,
@@ -10,6 +11,7 @@ export default class cardObject {
         dexterityMod,
         wisdomMod,
     ) {
+        this.databaseId = databaseId;
         this.img = img;
         this.cardName = name;
         this.description = description;
@@ -25,6 +27,7 @@ export default class cardObject {
         const itemCardWrapper = document.createElement('div');
         itemCardWrapper.id = `item-inventory-card-${index}`;
         itemCardWrapper.classList = "item-inventory-card";
+        itemCardWrapper.setAttribute('database-id', this.databaseId);
 
         const itemCardHeader = document.createElement('div');
         itemCardHeader.id = `item-inventory-card-header-${index}`;

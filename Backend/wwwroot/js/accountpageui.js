@@ -81,6 +81,7 @@ function renderUserDecks(parentElement) {
 function createNewDeck(parentElement) {
     const deckCard = new DeckCards;
     deckCard.createNewDeckWindow(parentElement, selectHeroForDeck);
+    newDeckData();
 }
 
 function selectHeroForDeck(buttonId) {
@@ -94,6 +95,8 @@ function selectHeroForDeck(buttonId) {
 
     [...allInventoryCards].forEach((card) => {
         card.addEventListener('click', () => {
+            card.classList.add('hero-card-deck');
+
             const button = document.getElementById(buttonId);
             const buttonParent = build.getParentById(buttonId);
 
@@ -115,9 +118,61 @@ function selectHeroForDeck(buttonId) {
     });
 }
 
+function newDeckData() {
+    try {
+        const deckLength = 10;
+        const createDeck = document.getElementById('create-deck-button-id');
+        const deckName = document.getElementById('create-new-deck-name-id').value;
+        const deckDescription = document.getElementById('create-new-deck-description-id').value;
+
+        createDeck.addEventListener('click', () => {
+            const newDeckDataObj = grabNewDeckData(deckLength, deckName, deckDescription);
+            console.log(newDeckDataObj);
+        });
+    } catch (error) {
+       console.error(error.message);
+    }
+}
+
+function grabNewDeckData(deckLength, deckName, deckDescription) {
+    const heroCardInDeck = document.querySelectorAll('.hero-card-deck');
+    const allDeckCards = [...heroCardInDeck];
+
+    if (allDeckCards.length != deckLength) {
+        throw new Error(`${allDeckCards.length} number of cards in deck is not allowed`);
+    } else {
+        return {
+            deckName: deckName,
+            deckDescription: deckDescription,
+            heroCardOne: parseInt(allDeckCards[0].getAttribute('database-id')),
+            heroCardTwo: parseInt(allDeckCards[1].getAttribute('database-id')),
+            heroCardThree: parseInt(allDeckCards[2].getAttribute('database-id')),
+            heroCardFour: parseInt(allDeckCards[3].getAttribute('database-id')),
+            heroCardFive: parseInt(allDeckCards[4].getAttribute('database-id')),
+            heroCardSix: parseInt(allDeckCards[5].getAttribute('database-id')),
+            heroCardSeven: parseInt(allDeckCards[6].getAttribute('database-id')),
+            heroCardEight: parseInt(allDeckCards[7].getAttribute('database-id')),
+            heroCardNine: parseInt(allDeckCards[8].getAttribute('database-id')),
+            heroCardTen: parseInt(allDeckCards[9].getAttribute('database-id')),
+        };
+    }            
+}
+
+async function postNewDeckData() {
+    const userId =  cookies.getCookieByName('UserId');
+    const url = `${hostadd.address}/UserData/AllUserAccountData/${userId}`
+
+    try {
+        
+    } catch (error) {
+       console.error(error.message);
+    }
+}
+
 function renderUserHeroCards(parentElement) {
     userData.heroData.forEach((card, index) => {
         const renderHeroCard = new HeroCard(
+            card.id,
             "", // Img goes here
             card.name,
             card.lvl,
@@ -128,7 +183,7 @@ function renderUserHeroCards(parentElement) {
             card.intellegenceStat,
             card.dexterityStat,
             card.wisdomStat,
-            "Placeholder", // Create a function to find the item name
+            "Placeholder", // Create a function to find and return the item name
         );
 
         renderHeroCard.renderInventoryHeroCard(parentElement, index);
@@ -138,11 +193,12 @@ function renderUserHeroCards(parentElement) {
 function renderUserItemCards(parentElement) {
     userData.itemData.forEach((card, index) => {
         const renderItemCard = new ItemCard(
+            card.id,
             card.imgData, 
             card.name, 
             card.description, 
             card.requiredLvl, 
-            "",
+            "", // item card class requirement
             card.strengthMod,
             card.intellegenceMod,
             card.dexterityMod,
@@ -192,5 +248,5 @@ itemCardsBtn.addEventListener('click', () => {
 
 window.onload = async () => {
     await getUserInventoryData();
-    console.log(userData);
+    console.log(userData); // remove this later when not useful
 }
