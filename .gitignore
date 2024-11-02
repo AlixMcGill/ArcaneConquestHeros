@@ -3,5 +3,6 @@ Backend/obj/
 Backend/bin/
 appsettings.json
 backend.http
+node_modules
 *.sln
 *.env
