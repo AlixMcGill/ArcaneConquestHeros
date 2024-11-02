@@ -55,6 +55,7 @@ async function getUserInventoryData() {
             userData.deckData = data.deckInv;
             userData.heroData = data.heroInv;
             userData.itemData = data.itemInv;
+            console.log(userData);
         }
 
     } catch (error) {
@@ -155,12 +156,49 @@ function highlightProceedButton() { // when deck and difficulty selected highlig
         proceedButton.addEventListener('click', () => {
             console.log('proceed');
             hideSelectionOptions(true);
+            stagePlayerData(selectedDeckId);
         });
     }
 }
 
 await getUserInventoryData();
 renderSelectionScreen();
+
+// player data manipulation
+
+const playerCards = [];
+
+function stagePlayerData(selectedDeck) {
+    console.log(
+    convertDeckObjectToIdArray(userData.deckData[findDeckIndexById(userData, selectedDeck)])
+    );
+}
+
+function findDeckIndexById(userData, id) { // finds the index of deck array using the id of deck object inside array
+    const index = userData.deckData.findIndex(deck => deck.id === id);
+     
+    if (index < 0 || index >= userData.deckData.length) {
+        throw new Error(`Index ${index} is out of range for the deckData array.`);
+    }
+
+    return index;
+}
+
+function convertDeckObjectToIdArray(deck) {
+    // takes in a deck object and returns all the hero ids as an array
+    const idsToReturn = [];
+
+    for(let key in deck) {
+        if (key.startsWith('heroId'))
+            idsToReturn.push(deck[key]);
+    }
+    
+    return idsToReturn;
+}
+
+// ai data generation
+
+// load game items
 
 // game logic
 
