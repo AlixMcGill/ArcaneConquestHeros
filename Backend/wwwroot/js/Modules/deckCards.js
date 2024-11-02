@@ -182,4 +182,26 @@ export default class DeckCards {
 
         parentElement.appendChild(wrapper);
     }
+
+    formatDeckList(deckArray) {
+        let deckListToRender = [];
+
+        deckArray.forEach((deck, index) => {
+            const deckContainer = document.createElement('div');
+            deckContainer.id = `deck-container-id-${index}`;
+            deckContainer.classList = 'flex-container deck-list-item';
+            deckContainer.setAttribute('database-id', deck.id);
+
+            const deckName = document.createElement('p');
+            deckName.id = `deck-list-name-id-${index}`;
+            deckName.classList = 'deck-list-name';
+            deckName.innerText = deck.name;
+
+            deckContainer.appendChild(deckName);
+
+            deckListToRender.push(deckContainer);
+        });
+
+        return deckListToRender;
+    }
 }

@@ -132,7 +132,7 @@ export default class renderHeroCard {
         const heroItemHeldId = `full-hero-inventory-item-held-${index}`;
 
         const heroStrengthStatClass = 'full-hero-inventory-strength-stat full-hero-inventory-stat';
-        const heroStrentgthStatId = `full-hero-inventory-strength-stat-${index}`;
+        const heroStrentgthStatId = `full-hero-inventory-strength-stat-int-id`;
 
         const heroDexterityStatClass = 'full-hero-inventory-dexterity-stat full-hero-inventory-stat';
         const heroDexteritystatId = `full-hero-invenotry-dexterity-stat-${index}`;
@@ -152,9 +152,9 @@ export default class renderHeroCard {
         heroCardWrapper.classList = wrapperClass;
         heroCardWrapper.setAttribute('database-id', this.databaseId);
 
-        heroCardWrapper.addEventListener('mouseleave', () => {
-            heroCardWrapper.remove();
-        });
+        //heroCardWrapper.addEventListener('mouseleave', () => {
+        //    heroCardWrapper.remove();
+        //});
 
         const heroCardHeader = document.createElement('div');
         heroCardHeader.id = heroHeaderId;
@@ -247,10 +247,18 @@ export default class renderHeroCard {
             statPointSpan.classList = 'full-hero-inventory-stat-point-span';
             statPointSpan.innerText = statPointsAvalible;
 
+            const updateStatPointSpans = (pointsToUpdate) => {
+                const allStatPointSpans = document.querySelectorAll('.full-hero-inventory-stat-point-span');
+                [...allStatPointSpans].forEach((span) => {
+                    span.innerText = pointsToUpdate;
+                });
+                //console.log([...allStatPointSpans]);
+            }
+
             // Strength Stat
 
             const strengthStatWrapper = document.createElement('div');
-            strengthStatWrapper.id = `full-hero-inventory-strength-stat-wrapper-${index}`;
+            strengthStatWrapper.id = `full-hero-inventory-strength-stat-wrapper-id`;
             strengthStatWrapper.classList = 'full-hero-inventory-stat-wrapper full-hero-inventory-strength-stat-wrapper';
 
             const strengthStatIncButton = document.createElement('button');
@@ -259,7 +267,21 @@ export default class renderHeroCard {
             strengthStatIncButton.innerText = incrementIdentifyer;
 
             strengthStatIncButton.addEventListener('click', () => {
+
                 if (statPointsAvalible <= 0) return;
+
+                const newStrengthStat = this.strengthStat + 1;
+                statPointsAvalible--;
+
+                if (statPointsAvalible > maxStatPoints) statPointsAvalible = maxStatPoints;
+                
+                updateStatPointSpans(statPointsAvalible);
+
+                const strengthStat = document.getElementById(heroStrentgthStatId);
+                strengthStat.innerText = `Strength: ${newStrengthStat}`;
+                //console.log(strengthStat);
+                // trigger reflow
+                const triggerReflow =  heroCardWrapper.offsetHeight;
             });
 
             const strengthStatDecButton = document.createElement('button');
@@ -269,6 +291,7 @@ export default class renderHeroCard {
 
             strengthStatDecButton.addEventListener('click', () => { 
                 if (statPointsAvalible <= 0) return;
+                if (statPointsAvalible > maxStatPoints) statPointsAvalible = maxStatPoints;
             });
 
             const strengthButtonWrapper = document.createElement('div');
@@ -295,7 +318,9 @@ export default class renderHeroCard {
 
             intellegenceStatIncButton.addEventListener('click', () => {
                 if (statPointsAvalible <= 0) return;
+                if (statPointsAvalible > maxStatPoints) statPointsAvalible = maxStatPoints;
 
+                
             });
 
             const intellegenceStatDecButton = document.createElement('button');
@@ -305,7 +330,7 @@ export default class renderHeroCard {
 
             intellegenceStatDecButton.addEventListener('click', () => {
                 if (statPointsAvalible <= 0) return;
-
+                if (statPointsAvalible > maxStatPoints) statPointsAvalible = maxStatPoints;
             });
 
             const intellegenceButtonWrapper = document.createElement('div');
@@ -332,7 +357,7 @@ export default class renderHeroCard {
 
             dexterityStatIncButton.addEventListener('click', () => {
                 if (statPointsAvalible <= 0) return;
-
+                if (statPointsAvalible > maxStatPoints) statPointsAvalible = maxStatPoints;
             });
 
             const dexterityStatDecButton = document.createElement('button');
@@ -342,7 +367,7 @@ export default class renderHeroCard {
 
             dexterityStatDecButton.addEventListener('click', () => {
                 if (statPointsAvalible <= 0) return;
-
+                if (statPointsAvalible > maxStatPoints) statPointsAvalible = maxStatPoints;
             });
 
             const dexterityButtonWrapper = document.createElement('div');
@@ -369,7 +394,7 @@ export default class renderHeroCard {
 
             wisdomStatIncButton.addEventListener('click', () => {
                 if (statPointsAvalible <= 0) return;
-
+                if (statPointsAvalible > maxStatPoints) statPointsAvalible = maxStatPoints;
             });
 
             const wisdomStatDecButton = document.createElement('button');
@@ -379,7 +404,6 @@ export default class renderHeroCard {
 
             wisdomStatDecButton.addEventListener('click', () => {
                 if (statPointsAvalible <= 0) return;
-
             });
 
             const wisdomButtonWrapper = document.createElement('div');
@@ -402,6 +426,6 @@ export default class renderHeroCard {
         }
 
 
-        parentElement.appendChild(heroCardWrapper);
+        parentElement.insertAdjacentElement('afterend', heroCardWrapper);
     }
 }
