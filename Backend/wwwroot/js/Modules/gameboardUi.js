@@ -1,3 +1,5 @@
+import renderHeroCard from './heroCard.js';
+
 export default class gameboard {
     constructor(playerCardsArray) {
         this.playerCardsArray = playerCardsArray;
@@ -47,11 +49,40 @@ export default class gameboard {
         parentElement.appendChild(wrapper);
     }
 
-    renderCardInventory() {
+    renderCardInventory(parentElement) {
+        const wrapper = document.createElement('div');
+        wrapper.id = 'card-inventory-wrapper';
+        wrapper.classList = 'flex-container';
 
+        this.playerCardsArray.forEach((cardObject, index) => {
+            const renderCard = new renderHeroCard(
+                cardObject.id,
+                '',
+                cardObject.name,
+                cardObject.lvl,
+                cardObject.currentExp,
+                cardObject.nextLvlExp,
+                cardObject.class,
+                cardObject.strengthStat,
+                cardObject.intellegenceStat,
+                cardObject.dexterityStat,
+                cardObject.wisdomStat,
+                ''
+            );
+
+            const cardContainer = document.createElement('div');
+            cardContainer.classList = 'card-container-item flex-vertical'
+            
+            renderCard.renderMiniCard(cardContainer, index);
+
+            wrapper.appendChild(cardContainer);
+        });
+
+        parentElement.appendChild(wrapper);
     }
 
     render(parentElement) {
         this.renderGameTurnPhaseUi(parentElement);
+        this.renderCardInventory(parentElement);
     }
 }

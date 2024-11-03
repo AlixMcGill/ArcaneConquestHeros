@@ -1,6 +1,7 @@
 import Cookie from './Modules/cookies.js';
 import hostadd from './Modules/hostaddress.js';
 import DeckCards from '../js/Modules/deckCards.js';
+import Gameboard from './Modules/gameboardUi.js';
 
 const deckCards = new DeckCards;
 const cookies = new Cookie;
@@ -154,9 +155,9 @@ function highlightProceedButton() { // when deck and difficulty selected highlig
         proceedButton.style.backgroundColor = 'green';
 
         proceedButton.addEventListener('click', () => {
-            console.log('proceed');
             hideSelectionOptions(true);
             stagePlayerData(selectedDeckId);
+            renderGameboardUi();
         });
     }
 }
@@ -166,12 +167,14 @@ renderSelectionScreen();
 
 // player data manipulation
 
-const playerCards = [];
+const playerCardObjects = [];
 
 function stagePlayerData(selectedDeck) {
-    console.log(
-    convertDeckObjectToIdArray(userData.deckData[findDeckIndexById(userData, selectedDeck)])
-    );
+    const cardIdsArray = convertDeckObjectToIdArray(userData.deckData[findDeckIndexById(userData, selectedDeck)])
+
+    cardIdsArray.forEach(card => {
+        playerCardObjects.push(userData.heroData[findHeroIndexById(userData, card)]);
+    });
 }
 
 function findDeckIndexById(userData, id) { // finds the index of deck array using the id of deck object inside array
@@ -179,6 +182,16 @@ function findDeckIndexById(userData, id) { // finds the index of deck array usin
      
     if (index < 0 || index >= userData.deckData.length) {
         throw new Error(`Index ${index} is out of range for the deckData array.`);
+    }
+
+    return index;
+}
+
+function findHeroIndexById(userData, id) { // finds the index of a hero using the hero.id
+    const index = userData.heroData.findIndex(hero => hero.id === id);
+
+    if (index < 0 || index >= userData.heroData.length) {
+        throw new Error(`Index ${index} is out of range for the heroData array.`);
     }
 
     return index;
@@ -198,7 +211,50 @@ function convertDeckObjectToIdArray(deck) {
 
 // ai data generation
 
-// load game items
+// render Gameboard ui
+
+function renderGameboardUi() {
+    const gameboardWrapper = document.getElementById('gameboard-container');
+    const gameboard = new Gameboard(playerCardObjects);
+    gameboard.render(gameboardWrapper);
+    addNextPhaseCycleEventListener();
+}
 
 // game logic
 
+// if turn state is true it is the players turn
+// if turn state is false it is the ai's turn
+let turnState = true;
+
+function addNextPhaseCycleEventListener() {
+    const nextPhaseButton = document.getElementById('next-phase-button');
+
+    nextPhaseButton.addEventListener('click', cycleTurnPhase);
+}
+
+function cycleTurnPhase() {
+    const nextPhaseButton = document.getElementById('next-phase-button');
+    const activeClass = 'active-gameboard-ui-phase-item';
+    const phaseIcons = [...document.querySelectorAll('.gameboard-ui-phase-item')];
+    const index = phaseIcons.findIndex(e => e.classList.contains(activeClass));
+    let nextIndex = index + 1;
+
+    if (nextIndex >= phaseIcons.length) {
+        nextIndex = 0;
+        turnState = !turnState;
+        togglePhaseWrapperClass();
+    }
+
+    phaseIcons.forEach(e => {e.classList.remove(activeClass)});
+    phaseIcons[nextIndex].classList.add(activeClass);
+
+    if (!turnState) {
+        nextPhaseButton.removeEventListener('click', cycleTurnPhase);
+    }
+}
+
+function togglePhaseWrapperClass() {
+    const gameboardTurnPhaseWrapper = document.getElementById('gameboard-phase-wrapper');
+    gameboardTurnPhaseWrapper.classList.remove('players-turn', 'ai-turn');
+    gameboardTurnPhaseWrapper.classList.add(turnState ? 'players-turn' : 'ai-turn');
+}
