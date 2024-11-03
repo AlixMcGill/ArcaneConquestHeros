@@ -5,3 +5,50 @@
 .selected-deck {
     background-color: pink;
 }
+
+.gameboard-phase-wrapper-class {
+    position: fixed;
+    bottom: 145px;
+    width: 100%;
+    align-items: center;
+    background-color: grey;
+}
+
+.players-turn {
+    background-color: rgb(80,80,255);
+}
+
+.ai-turn {
+    background-color: rgb(255,80,80);
+}
+
+.gameboard-ui-phase-item {
+    margin: .5rem;
+    padding: .1rem .7rem;
+    border-radius: 1rem;
+    background-color: rgb(190,190,190);
+    box-shadow: 1px 1px 3px rgba(0,0,0,.2);
+}
+
+.active-gameboard-ui-phase-item {
+    background-color:rgb(240,240,240);
+    box-shadow: 0px 0px 5px 5px rgba(190,190,190,.4);
+}
+
+#card-inventory-wrapper {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+    overflow: scroll;
+    overflow-y: hidden;
+    justify-content: space-around;
+}
+
+.card-container-item {
+    margin: .5rem;
+    padding: .5rem;
+    background-color: rgb(190,190,190);
+    min-width: 7rem;
+    border: 3px solid black;
+    border-radius: .5rem;
+}

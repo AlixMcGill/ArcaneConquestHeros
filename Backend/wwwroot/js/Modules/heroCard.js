@@ -28,6 +28,64 @@ export default class renderHeroCard {
         this.expPercentage = this.cardExp / this.cardExpNextLvl * 100;
     }
 
+    renderMiniCard(parentElement, index) {
+        const heroNameClass = 'hero-inventory-name';
+        const heroNameId = `hero-inventory-name-${index}`;
+
+        const heroLvlClass = 'hero-inventory-lvl';
+        const heroLvlId = `hero-inventory-lvl-${index}`;
+
+        const heroExpNumClass = 'hero-inventory-exp';
+        const heroExpNumId = `hero-inventory-exp-${index}`;
+
+        const heroClassClass = 'hero-inventory-class';
+        const heroClassId = `hero-inventory-class-${index}`;
+
+        const heroItemHeldClass = 'hero-inventory-item-held';
+        const heroItemHeldId = `hero-inventory-item-held-${index}`;
+
+        const heroCardName = document.createElement('p');
+        heroCardName.id = heroNameId;
+        heroCardName.classList = heroNameClass;
+        heroCardName.innerText = this.cardName;
+
+        parentElement.appendChild(heroCardName);
+
+        const heroCardLvl = document.createElement('p');
+        heroCardLvl.id = heroLvlId;
+        heroCardLvl.classList = heroLvlClass;
+        heroCardLvl.innerText = `Lvl: ${this.cardLvl}`;
+
+        parentElement.appendChild(heroCardLvl);
+
+        const heroCardExpNum = document.createElement('p');
+        heroCardExpNum.id = heroExpNumId;
+        heroCardExpNum.classList = heroExpNumClass;
+
+        if (this.cardExp >= this.cardExpNextLvl) {
+            heroCardWrapper.classList.add('hero-card-lvl-up');
+            heroCardExpNum.innerText = 'Exp: Lvl Up Availible'
+        } else {
+            heroCardExpNum.innerText = `Exp: (${this.cardExp}/${this.cardExpNextLvl})`;
+        }
+
+        parentElement.appendChild(heroCardExpNum);
+
+        const heroCardClass = document.createElement('p');
+        heroCardClass.id = heroClassId;
+        heroCardClass.classList = heroClassClass;
+        heroCardClass.innerText = `Class: ${this.cardClass}`;
+
+        parentElement.appendChild(heroCardClass);
+
+        const heroCardItemHeld = document.createElement('p');
+        heroCardItemHeld.id = heroItemHeldId;
+        heroCardItemHeld.classList = heroItemHeldClass;
+        heroCardItemHeld.innerText = `Item: ${this.itemHeldName}`;
+
+        parentElement.appendChild(heroCardItemHeld);
+    }
+
     renderInventoryHeroCard(parentElement, index) {
         const wrapperClass = 'hero-inventory-card';
         const wrapperId = `hero-inventory-card-${index}`;
