@@ -44,19 +44,24 @@ export default class renderHeroCard {
         const heroItemHeldClass = 'hero-inventory-item-held';
         const heroItemHeldId = `hero-inventory-item-held-${index}`;
 
+        const nameWrapper = document.createElement('div');
+        nameWrapper.classList = 'flex-container';
+
+        parentElement.appendChild(nameWrapper);
+
         const heroCardName = document.createElement('p');
         heroCardName.id = heroNameId;
         heroCardName.classList = heroNameClass;
         heroCardName.innerText = this.cardName;
 
-        parentElement.appendChild(heroCardName);
+        nameWrapper.appendChild(heroCardName);
 
         const heroCardLvl = document.createElement('p');
         heroCardLvl.id = heroLvlId;
         heroCardLvl.classList = heroLvlClass;
         heroCardLvl.innerText = `Lvl: ${this.cardLvl}`;
 
-        parentElement.appendChild(heroCardLvl);
+        nameWrapper.appendChild(heroCardLvl);
 
         const heroCardExpNum = document.createElement('p');
         heroCardExpNum.id = heroExpNumId;
