@@ -5,6 +5,63 @@ export default class gameboard {
         this.playerCardsArray = playerCardsArray;
     }
 
+    renderBoard(parentElement) {
+        const boardWrapper = document.createElement('div');
+        boardWrapper.id = 'board-wrapper-id';
+        boardWrapper.classList = 'board-wrapper';
+
+        parentElement.appendChild(boardWrapper);
+
+        const enemyContainer = document.createElement('div');
+        enemyContainer.id = 'enemy-board-container-id';
+        enemyContainer.classList = 'flex-container enemy-container empty-card-container';
+
+        boardWrapper.appendChild(enemyContainer);
+
+        const playerContainer = document.createElement('div');
+        playerContainer.id = 'player-board-container-id';
+        playerContainer.classList = 'flex-container player-container empty-card-container';
+
+        boardWrapper.appendChild(playerContainer);
+ 
+        const feildCardAmount = 4;
+
+        function createEmptyCardSlot(parent, feildPosition, isDroppable, index) {
+            const emptyCardSlot = document.createElement('div');
+            emptyCardSlot.id = `${feildPosition}-id-${index}`;
+            emptyCardSlot.classList = `empty-card-slot ${feildPosition}`;
+            parent.appendChild(emptyCardSlot);
+
+            if (isDroppable) {
+                emptyCardSlot.addEventListener('dragover', (event) => {
+                    event.preventDefault();
+                });
+
+                emptyCardSlot.addEventListener('drop', (event) => {
+                    event.preventDefault();
+
+                    const draggedItemId = event.dataTransfer.getData('text');
+                    const draggedItem = document.getElementById(draggedItemId);
+                    
+                    if (draggedItem) {
+                        emptyCardSlot.appendChild(draggedItem);
+                    } else {
+                        console.error("Dragged item not found!");
+                    }
+                });
+            }
+        }
+
+        for (let i = 0; i < feildCardAmount; i++) {
+            createEmptyCardSlot(enemyContainer, 'enemy-card-slot', false, i);
+        }
+ 
+        for (let i = 0; i < feildCardAmount; i++) {
+            createEmptyCardSlot(playerContainer, 'player-card-slot', true, i);
+
+        }
+    }
+
     renderGameTurnPhaseUi(parentElement) {
         const wrapper = document.createElement('div');
         wrapper.id = 'gameboard-phase-wrapper';
@@ -72,6 +129,11 @@ export default class gameboard {
 
             const cardContainer = document.createElement('div');
             cardContainer.classList = 'card-container-item flex-vertical'
+            cardContainer.draggable = true;
+            cardContainer.id = `card-${cardObject.id}-index-${index}`;
+            cardContainer.addEventListener('dragstart', (event) => {
+                event.dataTransfer.setData('text', event.target.id);
+            });
             
             renderCard.renderMiniCard(cardContainer, index);
 
@@ -82,6 +144,7 @@ export default class gameboard {
     }
 
     render(parentElement) {
+        this.renderBoard(parentElement);
         this.renderGameTurnPhaseUi(parentElement);
         this.renderCardInventory(parentElement);
     }
