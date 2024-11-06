@@ -2,6 +2,8 @@ import Cookie from './Modules/cookies.js';
 import hostadd from './Modules/hostaddress.js';
 import DeckCards from '../js/Modules/deckCards.js';
 import Gameboard from './Modules/gameboardUi.js';
+import cardGenerator from './Modules/cardGenerator.js';
+import generateCards from './Modules/cardGenerator.js';
 
 const deckCards = new DeckCards;
 const cookies = new Cookie;
@@ -209,7 +211,23 @@ function convertDeckObjectToIdArray(deck) {
     return idsToReturn;
 }
 
+function createPlayerCardLvlArr() {
+    let tempArr = [];
+    playerCardObjects.forEach(card => {
+        tempArr.push(parseInt(card.lvl));
+    });
+    return tempArr;
+}
+
 // ai data generation
+
+function generateAiCards() {
+    const lvlArray = createPlayerCardLvlArr();
+    const cardGen = new generateCards(10, lvlArray);
+
+    console.log(cardGen.build());
+
+}
 
 // render Gameboard ui
 
@@ -218,6 +236,8 @@ function renderGameboardUi() {
     const gameboard = new Gameboard(playerCardObjects);
     gameboard.render(gameboardWrapper);
     addNextPhaseCycleEventListener();
+
+    generateAiCards(); // TESTING PURPOSES IMPLIMENT LATER
 }
 
 // game logic
@@ -225,6 +245,8 @@ function renderGameboardUi() {
 // if turn state is true it is the players turn
 // if turn state is false it is the ai's turn
 let turnState = true;
+const gamePhases = ["Start", "Action", "Damage", "Healing", "End"];
+let currentGamePhase = gamePhases[0];
 
 function addNextPhaseCycleEventListener() {
     const nextPhaseButton = document.getElementById('next-phase-button');
@@ -241,8 +263,11 @@ function cycleTurnPhase() {
 
     if (nextIndex >= phaseIcons.length) {
         nextIndex = 0;
-        turnState = !turnState;
+        currentGamePhase = gamePhases[nextIndex]; // changes game phase state
+        turnState = !turnState; // swaps turnstate to false when players turn ends
         togglePhaseWrapperClass();
+    } else {
+        currentGamePhase = gamePhases[nextIndex]; // changes game phase state
     }
 
     phaseIcons.forEach(e => {e.classList.remove(activeClass)});
@@ -251,10 +276,25 @@ function cycleTurnPhase() {
     if (!turnState) {
         nextPhaseButton.removeEventListener('click', cycleTurnPhase);
     }
+
+    //checks to see if card elements are able to be dragged onto the game board by the turn state
+    checkIfDraggableByState(turnState, currentGamePhase);
 }
 
 function togglePhaseWrapperClass() {
     const gameboardTurnPhaseWrapper = document.getElementById('gameboard-phase-wrapper');
     gameboardTurnPhaseWrapper.classList.remove('players-turn', 'ai-turn');
     gameboardTurnPhaseWrapper.classList.add(turnState ? 'players-turn' : 'ai-turn');
+}
+
+function checkIfDraggableByState(turnState, gamePhase) {
+    const cardsInInventory = [...document.querySelectorAll('.card-container-item')];
+
+    cardsInInventory.forEach(card => {
+        if (turnState && gamePhase === "Start") {
+            card.draggable = true;
+        } else {
+            card.draggable = false;
+        }
+    });
 }
