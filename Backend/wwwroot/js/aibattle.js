@@ -225,6 +225,8 @@ function renderGameboardUi() {
 // if turn state is true it is the players turn
 // if turn state is false it is the ai's turn
 let turnState = true;
+const gamePhases = ["Start", "Action", "Damage", "Healing", "End"];
+let currentGamePhase = gamePhases[0];
 
 function addNextPhaseCycleEventListener() {
     const nextPhaseButton = document.getElementById('next-phase-button');
@@ -241,8 +243,11 @@ function cycleTurnPhase() {
 
     if (nextIndex >= phaseIcons.length) {
         nextIndex = 0;
-        turnState = !turnState;
+        currentGamePhase = gamePhases[nextIndex]; // changes game phase state
+        turnState = !turnState; // swaps turnstate to false when players turn ends
         togglePhaseWrapperClass();
+    } else {
+        currentGamePhase = gamePhases[nextIndex]; // changes game phase state
     }
 
     phaseIcons.forEach(e => {e.classList.remove(activeClass)});
@@ -251,10 +256,25 @@ function cycleTurnPhase() {
     if (!turnState) {
         nextPhaseButton.removeEventListener('click', cycleTurnPhase);
     }
+
+    //checks to see if card elements are able to be dragged onto the game board by the turn state
+    checkIfDraggableByState(turnState, currentGamePhase);
 }
 
 function togglePhaseWrapperClass() {
     const gameboardTurnPhaseWrapper = document.getElementById('gameboard-phase-wrapper');
     gameboardTurnPhaseWrapper.classList.remove('players-turn', 'ai-turn');
     gameboardTurnPhaseWrapper.classList.add(turnState ? 'players-turn' : 'ai-turn');
+}
+
+function checkIfDraggableByState(turnState, gamePhase) {
+    const cardsInInventory = [...document.querySelectorAll('.card-container-item')];
+
+    cardsInInventory.forEach(card => {
+        if (turnState && gamePhase === "Start") {
+            card.draggable = true;
+        } else {
+            card.draggable = false;
+        }
+    });
 }

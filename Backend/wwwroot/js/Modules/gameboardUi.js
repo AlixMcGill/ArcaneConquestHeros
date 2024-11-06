@@ -110,6 +110,20 @@ export default class gameboard {
         const wrapper = document.createElement('div');
         wrapper.id = 'card-inventory-wrapper';
         wrapper.classList = 'flex-container';
+        wrapper.addEventListener('dragover', (event) => {
+            event.preventDefault();
+        });
+        wrapper.addEventListener('drop', (event) => {
+            event.preventDefault();
+            const draggedItemId = event.dataTransfer.getData('text');
+            const draggedItem = document.getElementById(draggedItemId);
+
+            if (draggedItem) {
+                draggedItem.appendChild(draggedItem);
+            } else {
+                console.error("Dragged item not found!");
+            }
+        });
 
         this.playerCardsArray.forEach((cardObject, index) => {
             const renderCard = new renderHeroCard(
@@ -128,7 +142,7 @@ export default class gameboard {
             );
 
             const cardContainer = document.createElement('div');
-            cardContainer.classList = 'card-container-item flex-vertical'
+            cardContainer.classList = 'card-container-item flex-vertical';
             cardContainer.draggable = true;
             cardContainer.id = `card-${cardObject.id}-index-${index}`;
             cardContainer.addEventListener('dragstart', (event) => {
