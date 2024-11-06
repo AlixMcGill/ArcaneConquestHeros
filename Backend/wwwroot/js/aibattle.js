@@ -2,6 +2,8 @@ import Cookie from './Modules/cookies.js';
 import hostadd from './Modules/hostaddress.js';
 import DeckCards from '../js/Modules/deckCards.js';
 import Gameboard from './Modules/gameboardUi.js';
+import cardGenerator from './Modules/cardGenerator.js';
+import generateCards from './Modules/cardGenerator.js';
 
 const deckCards = new DeckCards;
 const cookies = new Cookie;
@@ -209,7 +211,23 @@ function convertDeckObjectToIdArray(deck) {
     return idsToReturn;
 }
 
+function createPlayerCardLvlArr() {
+    let tempArr = [];
+    playerCardObjects.forEach(card => {
+        tempArr.push(parseInt(card.lvl));
+    });
+    return tempArr;
+}
+
 // ai data generation
+
+function generateAiCards() {
+    const lvlArray = createPlayerCardLvlArr();
+    const cardGen = new generateCards(10, lvlArray);
+
+    console.log(cardGen.build());
+
+}
 
 // render Gameboard ui
 
@@ -218,6 +236,8 @@ function renderGameboardUi() {
     const gameboard = new Gameboard(playerCardObjects);
     gameboard.render(gameboardWrapper);
     addNextPhaseCycleEventListener();
+
+    generateAiCards(); // TESTING PURPOSES IMPLIMENT LATER
 }
 
 // game logic
