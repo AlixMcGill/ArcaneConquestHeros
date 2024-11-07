@@ -8,7 +8,7 @@ export default class generateCards {
         this.cardGeneratorOptions = {
             lvlGenRange: 4,
             maxNumOfTanks: 1,
-            maxNumOfSingleClass: 3,
+            maxNumOfSingleClass: 4,
         };
     }
 
@@ -45,66 +45,32 @@ export default class generateCards {
     // a deck cannot contain all of one class
     generateNewCardClasses() {
         const classes = ["Fighter", "True Tank", "Sorcerer", "Assassin", "Witch"];
-        let returnClasses = [];
+        const arr = new Array(this.numCardsToCreate).fill(null);  // Initialize an array with nulls
+        const counts = { "Fighter": 0, "True Tank": 0, "Sorcerer": 0, "Assassin": 0, "Witch": 0 };  // track how many times each class appears
 
-        const maxFighterAssassinSorcererWitch = this.cardGeneratorOptions.maxNumOfSingleClass;  // Max occurrences for all classes except True Tank
-        const maxAttempts = 10; // Max number of attempts to generate a valid set of classes
-        let attemptCount = 0;
+        // 50% chance for "True Tank" to appear once
+        if (Math.random() < 0.5) {
+            const randomIndex = Math.floor(Math.random() * this.numCardsToCreate);
+            arr[randomIndex] = "True Tank";  // You can place "True Tank" at any index
+            counts["True Tank"] = 1;  // Track that "True Tank" is used
+        }
 
-        // Determine if "True Tank" should be included (can be changed as needed)
-        const includeTrueTank = Math.random() < 0.5; // For example, 50% chance of including "True Tank"
+        // Fill the rest of the array with the other classes (excluding "True Tank")
+        for (let index = 0; index < arr.length; index++) {
+            if (arr[index] === null) {  // If the spot is still null
+                let randomClass = classes[Math.floor(Math.random() * 5)];
 
-        // Try to generate a valid set of classes up to maxAttempts
-        while (attemptCount < maxAttempts) {
-            console.log('attempt');
-            returnClasses = [];
-            const classCounts = {
-                "Fighter": 0,
-                "True Tank": 0,
-                "Sorcerer": 0,
-                "Assassin": 0,
-                "Witch": 0
-            };
-
-            // Optionally include "True Tank" once
-            if (includeTrueTank) {
-                returnClasses.push("True Tank");
-                classCounts["True Tank"]++;
-            }
-
-            // Now, generate the remaining classes ensuring no class exceeds the limit
-            for (let i = 0; i < this.numCardsToCreate - returnClasses.length; i++) {
-                // Choose a random class, but ensure the counts do not exceed the limit
-                let validClasses = classes.filter(className => {
-                    if (className === "True Tank" && classCounts[className] < 1) return true; // Only allow 1 "True Tank"
-                    return className !== "True Tank" && classCounts[className] < maxFighterAssassinSorcererWitch; // Max 3 for others
-                });
-
-                if (validClasses.length === 0) {
-                    // If no valid class can be chosen, restart the generation process
-                    break;
+                // Ensure "True Tank" isn't used again, and the other classes cannot appear more than maximum class requirement in options
+                while ((randomClass === "True Tank" && counts["True Tank"] === 1) || counts[randomClass] >= this.cardGeneratorOptions.maxNumOfSingleClass) {
+                    randomClass = classes[Math.floor(Math.random() * 5)];  // Pick a new class if conditions aren't met
                 }
 
-                // Randomly pick a class from the remaining valid options
-                const randIndex = Math.floor(Math.random() * validClasses.length);
-                const selectedClass = validClasses[randIndex];
-                returnClasses.push(selectedClass);
-                classCounts[selectedClass]++;
+                arr[index] = randomClass;
+                counts[randomClass]++;  // Increment the count for the chosen class
             }
-
-            // Check if the number of generated classes matches the required number
-            if (returnClasses.length === this.numCardsToCreate) {
-                break; // Success: valid set of classes generated
-            }
-
-            attemptCount++;
-        }
-
-        if (attemptCount >= maxAttempts) {
-            console.error("Failed to generate valid card classes within max attempts.");
-        }
-
-        return returnClasses;
+        } 
+        console.log(arr);
+        return arr;
     }
 
     generateCards() {
