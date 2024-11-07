@@ -73,6 +73,8 @@
 
 3. Each card must have a stat page
 
+    - 3 stat points awarded upon lvl up
+
     - Exp (Max Lvl 50)
     - Vitality (Health)
     - Strength ()
@@ -87,10 +89,15 @@
 4. Should be different card classes (Class names are generic for time being)
 
     - Fighter
+        - no wisdom
     - Assassin (Buff to Dexterity High Nerf to Vitality)
+        - no wisdom
     - Witch
+        - no int
     - Sorcerer
+        - no dex
     - True Tank (no damage but buffed Vitality)
+        - no wisdom
 
 5. Damage Negates
     
@@ -105,6 +112,8 @@
     - radient heal (heals friendly hero)
 
 ## Item Card Properties
+
+each item card lvl should only have 2 points of modifiers
 
 1. Each Item has a damage type 
 
@@ -180,6 +189,12 @@
     6. Apply Healing (Player B)
 
     Swap players and repeat
+
+    // card select
+    // action select
+    // deal damage
+    // healing select
+    // apply healing
 
 - Items held by heros cannot be changed mid game
 - Each player is allowed a maximum hand of 10 heros
