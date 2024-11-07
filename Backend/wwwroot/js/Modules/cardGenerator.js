@@ -88,18 +88,63 @@ export default class generateCards {
         return cardLvl * this.cardGeneratorOptions.statPointsAwardedPerCardLvl;
     }
 
+    generateNewCardStats(statPoints, cardClass) {
+        let points = statPoints;
+        let statObject = {strength: 0, dexterity: 0, intelligence: 0, wisdom: 0};
+        let statProbabilities = null;
+
+        if (cardClass === "Fighter") {
+            statProbabilities = {strength: 0.7, dexterity: 0.2, intelligence: 0.1, wisdom: 0}; // fighter
+        } else if (cardClass === "True Tank") {
+            statProbabilities = {strength: 0.8, dexterity: 0.1, intelligence: 0.1, wisdom: 0}; // True Tank
+        } else if (cardClass === "Assassin") {
+            statProbabilities = {strength: 0.8, dexterity: 0.1, intelligence: 0.1, wisdom: 0}; // Assassin
+        } else if (cardClass === "Sorcerer") {
+            statProbabilities = {strength: 0.3, dexterity: 0, intelligence: 0.6, wisdom: 0.1}; // Sorcerer
+        } else if (cardClass === "Witch") {
+            statProbabilities = {strength: 0.2, dexterity: 0.5, intelligence: 0, wisdom: 0.3}; // Witch
+        } else {
+            console.error("A valid card class was not entered to find point probability");
+            return statObject;
+        }
+
+        // distribute points across probabilities
+        for (let stat in statProbabilities) {
+            statObject[stat] = Math.round(statProbabilities[stat] * points);
+        }
+
+        // Make sure total points are balanced (because of rounding)
+        let totalAssignedPoints = Object.values(statObject).reduce((sum, value) => sum + value, 0);
+        let pointsToAdjust = points - totalAssignedPoints;
+
+        // distribute remaining points
+        while (pointsToAdjust !== 0) {
+            // Find the stat with the highest probability
+            let highestStat = Object.keys(statProbabilities).reduce((a, b) => statProbabilities[a] > statProbabilities[b] ? a : b);
+            
+            // Adjust the stat with the highest probability
+            statObject[highestStat] += pointsToAdjust;
+            pointsToAdjust = 0;
+        }
+
+        return statObject;
+    }
+
     generateCards() {
         const newCardLvls = this.generateNewCardLevels();
         const newCardClasses = this.generateNewCardClasses();
 
         for (let i = 0; i < this.numCardsToCreate; i++){
             const avalibleStatPoints = this.findStatPoints(newCardLvls[i]);
-
-            console.log(avalibleStatPoints);
+            const statObject = this.generateNewCardStats(avalibleStatPoints, newCardClasses[i]);
 
             const newCard = {
                 lvl: newCardLvls[i],
                 class: newCardClasses[i],
+                strength: statObject.strength,
+                dexterity: statObject.dexterity,
+                intelligence: statObject.intelligence,
+                wisdom: statObject.wisdom
             }
             
             this.generatedCards.push(newCard);
