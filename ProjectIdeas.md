@@ -136,6 +136,8 @@ each item card lvl should only have 2 points of modifiers
         - Arcane Fire
     - Flasks
         - Poison, Witch & Assassin
+            - has turn duration
+            - has damage amount `35 + (wisMod + strMod * cardlvl * 2)`
     - Sheilds, True Tank
         - Block
         - Parry

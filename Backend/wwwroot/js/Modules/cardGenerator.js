@@ -282,10 +282,10 @@ export default class generateCards {
             statProbabilities = {strength: 0.2, dexterity: 0.5, intelligence: 0, wisdom: 0.3};
 
         } else if (cardType === this.types.Poison) {
-            statProbabilities = {strength: 0.2, dexterity: 0.5, intelligence: 0, wisdom: 0.3};
+            statProbabilities = {strength: 0.2, dexterity: 0.4, intelligence: 0, wisdom: 0.3};
 
         } else if (cardType === this.types.lifeLink) {
-            statProbabilities = {strength: 0.2, dexterity: 0.5, intelligence: 0, wisdom: 0.3};
+            statProbabilities = {strength: 0.3, dexterity: 0.5, intelligence: 0, wisdom: 0.3};
 
         } else if (cardType === this.types.radient) {
             statProbabilities = {strength: 0.2, dexterity: 0.5, intelligence: 0, wisdom: 0.3};
@@ -317,6 +317,23 @@ export default class generateCards {
         return statObject;
     }
 
+    generatePoisonStats(cardType, strengthMod, wisdomMod, cardLvl) {
+        const baseDamage = 35;
+        const poison = {
+            duration: null,
+            damage: null
+        }
+
+        if (cardType !== this.types.Poison) {
+            return poison;
+        } // returns null values if type is not poison
+
+        poison.duration = Math.floor(Math.random() * (4 - 2 + 1)) + 2;
+        poison.damage = baseDamage + (strengthMod + wisdomMod * cardLvl * 2);
+
+        return poison;
+    }
+
 
     //   ----------   item card build   ----------
 
@@ -326,6 +343,7 @@ export default class generateCards {
         const cardLvl = this.generateItemCardLvl(heroCardLvl);
         const cardType = this.generateItemCardType(heroCardClass);
         const mods = this.generateItemCardMods(this.findModPoints(cardLvl), cardType);
+        const poison = this.generatePoisonStats(cardType, mods.strength, mods.intelligence, cardLvl)
 
         const newItemCard = {
             reqLvl: cardLvl,
@@ -334,8 +352,8 @@ export default class generateCards {
             dexterityMod: mods.dexterity,
             intellegenceMod: mods.intelligence,
             wisdomMod: mods.wisdom,
-            poisonDamage: 0,
-            poisonDuration: 0,
+            poisonDamage: poison.damage,
+            poisonDuration: poison.duration,
             lifeLink: 0,
             radient: 0,
         }
