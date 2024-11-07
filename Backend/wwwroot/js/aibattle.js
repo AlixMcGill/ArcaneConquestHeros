@@ -2,7 +2,6 @@ import Cookie from './Modules/cookies.js';
 import hostadd from './Modules/hostaddress.js';
 import DeckCards from '../js/Modules/deckCards.js';
 import Gameboard from './Modules/gameboardUi.js';
-import cardGenerator from './Modules/cardGenerator.js';
 import generateCards from './Modules/cardGenerator.js';
 
 const deckCards = new DeckCards;
