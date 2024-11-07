@@ -171,6 +171,10 @@ export default class generateCards {
         }
     }
 
+    generateActions() {
+        return Math.floor(Math.random() * 2) + 1;
+    }
+
 
     //   ----------   item card properties generation   ----------
 
@@ -224,6 +228,7 @@ export default class generateCards {
                 class: newCardClasses[i],
                 name: this.generateCardNames(newCardClasses[i]),
                 item: this.generateItemCards(newCardClasses[i], newCardLvls[i]),
+                actions: this.generateActions(),
                 strength: statObject.strength,
                 dexterity: statObject.dexterity,
                 intelligence: statObject.intelligence,
