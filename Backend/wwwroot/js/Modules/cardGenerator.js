@@ -2,20 +2,19 @@ export default class generateCards {
     constructor(numCardsToCreate, cardLvlArray) {
         this.numCardsToCreate = numCardsToCreate;
         this.cardLvlArray = cardLvlArray;
-        this.averageCardLvl = this.findAverageCardLvl();
         this.generatedCards = [];
 
         this.cardGeneratorOptions = {
             lvlGenRange: 4,
             maxNumOfTanks: 1,
             maxNumOfSingleClass: 4,
+            statPointsAwardedPerCardLvl: 3,
         };
     }
 
     findAverageCardLvl() {
-        let sum;
+        let sum = 0;
         let numOfElements = this.cardLvlArray.length;
-
         for (let i = 0; i < numOfElements; i++) {
             sum += this.cardLvlArray[i];
         }
@@ -27,9 +26,21 @@ export default class generateCards {
 
     generateNewCardLevels() {
         let newCardLvls = [];
+        const averageCardLvl = this.findAverageCardLvl();
 
         for (let i = 0; i < this.numCardsToCreate; i++) {
-            let newLvl = this.averageCardLvl + (Math.random() * (2 * this.cardGeneratorOptions.lvlGenRange) - this.cardGeneratorOptions.lvlGenRange);
+            // create a new card level within a range of the average level of the playes card
+            let newLvl = Math.floor(averageCardLvl + (Math.random() * (2 * this.cardGeneratorOptions.lvlGenRange) - this.cardGeneratorOptions.lvlGenRange));
+
+            // ensures levels cannot be negative or zero
+            if (newLvl < 1) {
+                newLvl = 1;
+            }
+
+            if (newLvl >= 50) {
+                newLvl = 50;
+            }
+
             newCardLvls.push(newLvl);
         }
 
@@ -69,8 +80,12 @@ export default class generateCards {
                 counts[randomClass]++;  // Increment the count for the chosen class
             }
         } 
-        console.log(arr);
         return arr;
+    }
+
+    findStatPoints(cardLvl) {
+        // calculates how many points should be allocated to stats per level
+        return cardLvl * this.cardGeneratorOptions.statPointsAwardedPerCardLvl;
     }
 
     generateCards() {
@@ -78,6 +93,9 @@ export default class generateCards {
         const newCardClasses = this.generateNewCardClasses();
 
         for (let i = 0; i < this.numCardsToCreate; i++){
+            const avalibleStatPoints = this.findStatPoints(newCardLvls[i]);
+
+            console.log(avalibleStatPoints);
 
             const newCard = {
                 lvl: newCardLvls[i],
