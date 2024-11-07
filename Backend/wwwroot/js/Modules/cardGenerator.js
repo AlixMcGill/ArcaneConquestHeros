@@ -10,6 +10,15 @@ export default class generateCards {
             maxNumOfTanks: 1,
             maxNumOfSingleClass: 4,
             statPointsAwardedPerCardLvl: 3,
+            modPointsAwarderPerItemLvl: 2,
+        };
+
+        this.classes = {
+            fighter: "Fighter",
+            assassin: "Assassin",
+            sorcerer: "Sorcerer",
+            trueTank: "True Tank",
+            witch: "Witch"
         };
     }
 
@@ -192,16 +201,73 @@ export default class generateCards {
         return generatedLvl;
     }
 
+    generateItemCardType(heroCardClass) {
+        const types = {
+            bludgeoning: "Bludgeoning",
+            pericing: "Pericing",
+            constriction: "Constriction",
+            lightning: "Lightning",
+            frost: "Frost",
+            fire: "Fire",
+            Poison: "Poison",
+            sheild: "Sheild",
+            lifeLink: "Life Link",
+            radient: "Radient",
+        };
+        const validFighterTypes = [types.bludgeoning, types.pericing];
+        const validTankTypes = [types.sheild];
+        const validAssassinTypes = [types.pericing, types.constriction, types.Poison];
+        const validSorcererTypes = [types.lightning, types.fire, types.frost];
+        const validWitchTypes = [types.Poison, types.lifeLink, types.radient];
+
+        function randArrayItem(array) {
+            if (array.length === 0) {
+                console.error("In generateItemCardType() the array passed contains no length");
+                return null;
+            }
+            const randIndex = Math.floor(Math.random() * array.length);
+            return array[randIndex];
+        }
+
+        if (heroCardClass === this.classes.fighter) {
+            return randArrayItem(validFighterTypes);
+
+        } else if (heroCardClass === this.classes.trueTank) {
+            return randArrayItem(validTankTypes);
+
+        } else if (heroCardClass === this.classes.assassin) {
+            return randArrayItem(validAssassinTypes);
+
+        } else if (heroCardClass === this.classes.sorcerer) {
+            return randArrayItem(validSorcererTypes);
+
+        } else if (heroCardClass === this.classes.witch) {
+            return randArrayItem(validWitchTypes);
+
+        } else {
+            console.error("In generateItemCardType() a valid class was not passed");
+        }
+        
+    }
+
+
+    //   ----------   item card build   ----------
+
+
     // builds the item cards to attach to hero card
     generateItemCards(heroCardClass, heroCardLvl) {
+        const cardLvl = this.generateItemCardLvl(heroCardLvl);
+        const cardType = this.generateItemCardType(heroCardClass);
+
         const newItemCard = {
-            reqLvl: this.generateItemCardLvl(heroCardLvl),
-            type: null,
+            reqLvl: cardLvl,
+            type: cardType,
             strengthMod: null,
             dexterityMod: null,
             intellegenceMod: null,
             wisdomMod: null,
             poisonDamage: 0,
+            poisonDuration: 0,
             lifeLink: 0,
             radient: 0,
         }
