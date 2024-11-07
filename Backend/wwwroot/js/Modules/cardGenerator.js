@@ -6,6 +6,7 @@ export default class generateCards {
 
         this.cardGeneratorOptions = {
             lvlGenRange: 4,
+            itemLvlGenRange: 3,
             maxNumOfTanks: 1,
             maxNumOfSingleClass: 4,
             statPointsAwardedPerCardLvl: 3,
@@ -174,9 +175,34 @@ export default class generateCards {
     //   ----------   item card properties generation   ----------
 
 
-    // builds the item cards to attach to hero card
-    generateItemCards(heroCardClass) {
+    generateItemCardLvl(heroCardLvl) {
+        const min = parseInt(heroCardLvl) - this.cardGeneratorOptions.itemLvlGenRange;
+        const max = parseInt(heroCardLvl);
 
+        let generatedLvl = Math.floor(Math.random() * (max - min + 1)) + min;
+
+        if (generatedLvl < 1) {
+            generatedLvl = 1;
+        }
+
+        return generatedLvl;
+    }
+
+    // builds the item cards to attach to hero card
+    generateItemCards(heroCardClass, heroCardLvl) {
+        const newItemCard = {
+            reqLvl: this.generateItemCardLvl(heroCardLvl),
+            type: null,
+            strengthMod: null,
+            dexterityMod: null,
+            intellegenceMod: null,
+            wisdomMod: null,
+            poisonDamage: 0,
+            lifeLink: 0,
+            radient: 0,
+        }
+
+        return newItemCard;
     }
 
 
@@ -197,6 +223,7 @@ export default class generateCards {
                 lvl: newCardLvls[i],
                 class: newCardClasses[i],
                 name: this.generateCardNames(newCardClasses[i]),
+                item: this.generateItemCards(newCardClasses[i], newCardLvls[i]),
                 strength: statObject.strength,
                 dexterity: statObject.dexterity,
                 intelligence: statObject.intelligence,
