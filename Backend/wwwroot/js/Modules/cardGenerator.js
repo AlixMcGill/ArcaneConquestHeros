@@ -328,10 +328,39 @@ export default class generateCards {
             return poison;
         } // returns null values if type is not poison
 
+        if (strengthMod === 0) {strengthMod = 1};
+        if (wisdomMod === 0) {wisdomMod = 1};
+
         poison.duration = Math.floor(Math.random() * (4 - 2 + 1)) + 2;
         poison.damage = baseDamage + (strengthMod + wisdomMod * cardLvl * 2);
 
         return poison;
+    }
+
+    generateLifeLinkStat(cardType, cardLvl, wisdomMod) {
+        const baseHeal = 40;
+        
+        if (cardType !== this.types.lifeLink) {
+            return null;
+        }
+
+        if (wisdomMod === 0) {wisdomMod = 1};
+
+        return baseHeal + (wisdomMod * cardLvl * 2);
+    }
+
+    generateRadientStat(cardType, cardLvl, dexMod) {
+        const baseHeal = 0.05;
+        const maxHeal = 0.8;
+        let t = cardLvl + dexMod;
+
+        if (cardType !== this.types.radient) {
+            return null;
+        }
+
+        t = Math.max(0, Math.min(150, t));
+
+        return (baseHeal + (t / 150) * (maxHeal - baseHeal)).toFixed(4);
     }
 
 
@@ -343,7 +372,9 @@ export default class generateCards {
         const cardLvl = this.generateItemCardLvl(heroCardLvl);
         const cardType = this.generateItemCardType(heroCardClass);
         const mods = this.generateItemCardMods(this.findModPoints(cardLvl), cardType);
-        const poison = this.generatePoisonStats(cardType, mods.strength, mods.intelligence, cardLvl)
+        const poison = this.generatePoisonStats(cardType, mods.strength, mods.wisdom, cardLvl);
+        const lifeLink = this.generateLifeLinkStat(cardType, cardLvl, mods.wisdom);
+        const radient = this.generateRadientStat(cardType, cardLvl, mods.dexterity);
 
         const newItemCard = {
             reqLvl: cardLvl,
@@ -354,8 +385,8 @@ export default class generateCards {
             wisdomMod: mods.wisdom,
             poisonDamage: poison.damage,
             poisonDuration: poison.duration,
-            lifeLink: 0,
-            radient: 0,
+            lifeLink: lifeLink,
+            radient: radient,
         }
 
         return newItemCard;
