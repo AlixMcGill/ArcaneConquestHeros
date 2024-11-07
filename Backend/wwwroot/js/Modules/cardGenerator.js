@@ -20,6 +20,19 @@ export default class generateCards {
             trueTank: "True Tank",
             witch: "Witch"
         };
+
+        this.types = {
+            bludgeoning: "Bludgeoning",
+            pericing: "Pericing",
+            constriction: "Constriction",
+            lightning: "Lightning",
+            frost: "Frost",
+            fire: "Fire",
+            Poison: "Poison",
+            sheild: "Sheild",
+            lifeLink: "Life Link",
+            radient: "Radient",
+        };
     }
 
     // finds the average level of all player cards in currently selected deck
@@ -202,23 +215,11 @@ export default class generateCards {
     }
 
     generateItemCardType(heroCardClass) {
-        const types = {
-            bludgeoning: "Bludgeoning",
-            pericing: "Pericing",
-            constriction: "Constriction",
-            lightning: "Lightning",
-            frost: "Frost",
-            fire: "Fire",
-            Poison: "Poison",
-            sheild: "Sheild",
-            lifeLink: "Life Link",
-            radient: "Radient",
-        };
-        const validFighterTypes = [types.bludgeoning, types.pericing];
-        const validTankTypes = [types.sheild];
-        const validAssassinTypes = [types.pericing, types.constriction, types.Poison];
-        const validSorcererTypes = [types.lightning, types.fire, types.frost];
-        const validWitchTypes = [types.Poison, types.lifeLink, types.radient];
+        const validFighterTypes = [this.types.bludgeoning, this.types.pericing];
+        const validTankTypes = [this.types.sheild];
+        const validAssassinTypes = [this.types.pericing, this.types.constriction, this.types.Poison];
+        const validSorcererTypes = [this.types.lightning, this.types.fire, this.types.frost];
+        const validWitchTypes = [this.types.Poison, this.types.lifeLink, this.types.radient];
 
         function randArrayItem(array) {
             if (array.length === 0) {
@@ -250,6 +251,72 @@ export default class generateCards {
         
     }
 
+    findModPoints(itemLvl) {
+        return itemLvl * this.cardGeneratorOptions.modPointsAwarderPerItemLvl;
+    }
+
+    generateItemCardMods(modPoints, cardType) {
+        let points = modPoints;
+        let statObject = {strength: 0, dexterity: 0, intelligence: 0, wisdom: 0};
+        let statProbabilities = null;
+
+        if (cardType === this.types.bludgeoning) {
+            statProbabilities = {strength: 0.7, dexterity: 0.2, intelligence: 0.1, wisdom: 0};
+
+        } else if (cardType === this.types.pericing) {
+            statProbabilities = {strength: 0.8, dexterity: 0.1, intelligence: 0.1, wisdom: 0};
+
+        } else if (cardType === this.types.constriction) {
+            statProbabilities = {strength: 0.8, dexterity: 0.1, intelligence: 0.1, wisdom: 0};
+
+        } else if (cardType === this.types.sheild) {
+            statProbabilities = {strength: 0.3, dexterity: 0, intelligence: 0.6, wisdom: 0.1};
+
+        } else if (cardType === this.types.lightning) {
+            statProbabilities = {strength: 0.2, dexterity: 0.5, intelligence: 0, wisdom: 0.3};
+
+        } else if (cardType === this.types.fire) {
+            statProbabilities = {strength: 0.2, dexterity: 0.5, intelligence: 0, wisdom: 0.3};
+
+        } else if (cardType === this.types.frost) {
+            statProbabilities = {strength: 0.2, dexterity: 0.5, intelligence: 0, wisdom: 0.3};
+
+        } else if (cardType === this.types.Poison) {
+            statProbabilities = {strength: 0.2, dexterity: 0.5, intelligence: 0, wisdom: 0.3};
+
+        } else if (cardType === this.types.lifeLink) {
+            statProbabilities = {strength: 0.2, dexterity: 0.5, intelligence: 0, wisdom: 0.3};
+
+        } else if (cardType === this.types.radient) {
+            statProbabilities = {strength: 0.2, dexterity: 0.5, intelligence: 0, wisdom: 0.3};
+
+        } else {
+            console.error("in generateItemCardMods() a valid card type was not entered to find point probability");
+            return statObject;
+        }
+
+        // distribute points across probabilities
+        for (let stat in statProbabilities) {
+            statObject[stat] = Math.round(statProbabilities[stat] * points);
+        }
+
+        // Make sure total points are balanced (because of rounding)
+        let totalAssignedPoints = Object.values(statObject).reduce((sum, value) => sum + value, 0);
+        let pointsToAdjust = points - totalAssignedPoints;
+
+        // distribute remaining points
+        while (pointsToAdjust !== 0) {
+            // Find the stat with the highest probability
+            let highestStat = Object.keys(statProbabilities).reduce((a, b) => statProbabilities[a] > statProbabilities[b] ? a : b);
+            
+            // Adjust the stat with the highest probability
+            statObject[highestStat] += pointsToAdjust;
+            pointsToAdjust = 0;
+        }
+
+        return statObject;
+    }
+
 
     //   ----------   item card build   ----------
 
@@ -258,14 +325,15 @@ export default class generateCards {
     generateItemCards(heroCardClass, heroCardLvl) {
         const cardLvl = this.generateItemCardLvl(heroCardLvl);
         const cardType = this.generateItemCardType(heroCardClass);
+        const mods = this.generateItemCardMods(this.findModPoints(cardLvl), cardType);
 
         const newItemCard = {
             reqLvl: cardLvl,
             type: cardType,
-            strengthMod: null,
-            dexterityMod: null,
-            intellegenceMod: null,
-            wisdomMod: null,
+            strengthMod: mods.strength,
+            dexterityMod: mods.dexterity,
+            intellegenceMod: mods.intelligence,
+            wisdomMod: mods.wisdom,
             poisonDamage: 0,
             poisonDuration: 0,
             lifeLink: 0,
@@ -288,12 +356,13 @@ export default class generateCards {
         for (let i = 0; i < this.numCardsToCreate; i++){
             const avalibleStatPoints = this.findStatPoints(newCardLvls[i]);
             const statObject = this.generateNewCardStats(avalibleStatPoints, newCardClasses[i]);
+            const itemCard = this.generateItemCards(newCardClasses[i], newCardLvls[i]);
 
             const newCard = {
                 lvl: newCardLvls[i],
                 class: newCardClasses[i],
                 name: this.generateCardNames(newCardClasses[i]),
-                item: this.generateItemCards(newCardClasses[i], newCardLvls[i]),
+                item: itemCard,
                 actions: this.generateActions(),
                 strength: statObject.strength,
                 dexterity: statObject.dexterity,
