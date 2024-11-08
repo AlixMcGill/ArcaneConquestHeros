@@ -10,7 +10,7 @@ export default class generateCards {
             maxNumOfTanks: 1,
             maxNumOfSingleClass: 4,
             statPointsAwardedPerCardLvl: 3,
-            modPointsAwarderPerItemLvl: 2,
+            modPointsAwarderPerItemLvl: 2, // if this is changed item stats must be modified
         };
 
         this.classes = {
@@ -195,6 +195,25 @@ export default class generateCards {
 
     generateActions() {
         return Math.floor(Math.random() * 2) + 1;
+    }
+
+    generateVitality(heroClass, heroCardStr, itemCardStr, heroCardLvl) {
+        let baseHealth = 100;
+
+        if (heroClass === this.classes.fighter) {
+            baseHealth = 150;
+        } else if (heroClass === this.classes.trueTank) {
+            baseHealth = 250;
+        } else if (heroClass === this.classes.assassin) {
+            baseHealth = 100;
+        } else if (heroClass === this.classes.witch) {
+            baseHealth = 80;
+        } else if (heroClass === this.classes.sorcerer) {
+            baseHealth = 70;
+        }
+
+        const vitality = (baseHealth + heroCardStr + itemCardStr) * heroCardLvl;
+        return vitality;
     }
 
 
@@ -411,6 +430,7 @@ export default class generateCards {
                 lvl: newCardLvls[i],
                 class: newCardClasses[i],
                 name: this.generateCardNames(newCardClasses[i]),
+                vitality: this.generateVitality(newCardClasses[i], statObject.strength, itemCard.strengthMod, newCardLvls[i]),
                 item: itemCard,
                 actions: this.generateActions(),
                 strength: statObject.strength,

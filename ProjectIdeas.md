@@ -143,6 +143,7 @@ each item card lvl should only have 2 points of modifiers
         - Parry
     - Talasmans, Witch
         - Life link
+            - amount `40 + (wisMod * cardLvl * 2)`
         - Radient
         - voodoo
 ## Game Mechanics
