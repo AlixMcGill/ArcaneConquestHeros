@@ -1,8 +1,25 @@
 import renderHeroCard from './heroCard.js';
+import cardGenerator from './cardGenerator.js';
 
 export default class gameboard {
-    constructor(playerCardsArray) {
+    constructor(playerCardsArray, itemCardsArray) {
         this.playerCardsArray = playerCardsArray;
+        this.itemCardsArray = itemCardsArray;
+    }
+
+    // ---------- Initial Board Rendering ---------- 
+
+    findItemIndexById(itemData, id) { // finds the index of a item using the item.id
+        console.log(itemData);
+        const index = itemData.findIndex(item => item.id === id);
+
+        if (index < 0 || index >= itemData.length) {
+            console.error(`Index ${index} is out of range for the itemData array.`); // change to throw new error later
+            // player cards during testing do not have the required item card
+            return 0;
+        }
+
+        return index;
     }
 
     renderBoard(parentElement) {
@@ -107,6 +124,8 @@ export default class gameboard {
     }
 
     renderCardInventory(parentElement) {
+        const cardGen = new cardGenerator();
+
         const wrapper = document.createElement('div');
         wrapper.id = 'card-inventory-wrapper';
         wrapper.classList = 'flex-container';
@@ -126,7 +145,7 @@ export default class gameboard {
         });
 
         this.playerCardsArray.forEach((cardObject, index) => {
-            const renderCard = new renderHeroCard(
+            const renderCard = new renderHeroCard( // init render hero card class
                 cardObject.id,
                 '',
                 cardObject.name,
@@ -141,15 +160,23 @@ export default class gameboard {
                 ''
             );
 
+            // calculate card vitality
+            console.log(cardObject.itemHeldId);
+            const itemIndex = this.findItemIndexById(this.itemCardsArray, cardObject.itemHeldId);
+            const vitality = cardGen.generateVitality(
+                cardObject.class, cardObject.strengthStat, this.itemCardsArray[itemIndex].strengthMod, cardObject.lvl);
+
+            // create the player card
             const cardContainer = document.createElement('div');
             cardContainer.classList = 'card-container-item flex-vertical';
             cardContainer.draggable = true;
             cardContainer.id = `card-${cardObject.id}-index-${index}`;
+            cardContainer.setAttribute("Vitality", vitality);
             cardContainer.addEventListener('dragstart', (event) => {
                 event.dataTransfer.setData('text', event.target.id);
             });
             
-            renderCard.renderMiniCard(cardContainer, index);
+            renderCard.renderMiniCard(cardContainer, index, vitality);
 
             wrapper.appendChild(cardContainer);
         });
@@ -157,9 +184,37 @@ export default class gameboard {
         parentElement.appendChild(wrapper);
     }
 
-    render(parentElement) {
+    // call this method to render game board and player items
+    render(parentElement) { 
         this.renderBoard(parentElement);
         this.renderGameTurnPhaseUi(parentElement);
         this.renderCardInventory(parentElement);
+        this.updateCardVitalityBar(); // updates the card health bar to init
+    }
+
+    // ---------- Update Logic ----------
+    
+    updateCardVitalityBar() {
+       const allCards = [...document.querySelectorAll('.card-container-item')];
+
+        allCards.forEach(card => {
+            const vitalityBar = card.querySelector('.vitality-bar');
+            const currentVitality = parseInt(card.querySelector('.vitality-current-value').innerText);
+            const maxVitality = parseInt(card.querySelector('.vitality-max-value').innerText);
+
+            if (isNaN(currentVitality) || isNaN(maxVitality) || currentVitality === 0 || maxVitality === 0) {
+                console.warn("Invalid vitality values:", currentVitality, maxVitality);
+                vitalityBar.style.width = "0%";
+            }
+
+            const vitalityPercentage = (currentVitality / maxVitality) * 100;
+
+            vitalityBar.style.width = `${vitalityPercentage}%`;
+        });
+    }
+
+    // Method gets called when game updates are required
+    renderUpdates() {
+        this.updateCardVitalityBar();
     }
 }

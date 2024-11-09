@@ -3,6 +3,7 @@ import hostadd from './Modules/hostaddress.js';
 import DeckCards from '../js/Modules/deckCards.js';
 import Gameboard from './Modules/gameboardUi.js';
 import generateCards from './Modules/cardGenerator.js';
+import gameboard from './Modules/gameboardUi.js';
 
 const deckCards = new DeckCards;
 const cookies = new Cookie;
@@ -176,6 +177,7 @@ function stagePlayerData(selectedDeck) {
     cardIdsArray.forEach(card => {
         playerCardObjects.push(userData.heroData[findHeroIndexById(userData, card)]);
     });
+    console.log(playerCardObjects);
 }
 
 function findDeckIndexById(userData, id) { // finds the index of deck array using the id of deck object inside array
@@ -232,9 +234,9 @@ function generateAiCards() {
 
 function renderGameboardUi() {
     const gameboardWrapper = document.getElementById('gameboard-container');
-    const gameboard = new Gameboard(playerCardObjects);
+    const gameboard = new Gameboard(playerCardObjects, userData.itemData);
     gameboard.render(gameboardWrapper);
-    addNextPhaseCycleEventListener();
+    addNextPhaseCycleEventListener(); // Game loop init
 
     generateAiCards(); // TESTING PURPOSES IMPLIMENT LATER
 }
@@ -253,7 +255,9 @@ function addNextPhaseCycleEventListener() {
     nextPhaseButton.addEventListener('click', cycleTurnPhase);
 }
 
-function cycleTurnPhase() {
+// "Game loop"
+function cycleTurnPhase() { // this has effectively become the "Game loop"
+    const gameUi = new gameboard(); // class to access ui updates
     const nextPhaseButton = document.getElementById('next-phase-button');
     const activeClass = 'active-gameboard-ui-phase-item';
     const phaseIcons = [...document.querySelectorAll('.gameboard-ui-phase-item')];
@@ -278,7 +282,10 @@ function cycleTurnPhase() {
 
     //checks to see if card elements are able to be dragged onto the game board by the turn state
     checkIfDraggableByState(turnState, currentGamePhase);
+
+    gameUi.renderUpdates(); // renders ui updates when turn cycles
 }
+
 
 function togglePhaseWrapperClass() {
     const gameboardTurnPhaseWrapper = document.getElementById('gameboard-phase-wrapper');

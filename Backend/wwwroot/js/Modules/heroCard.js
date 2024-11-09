@@ -28,7 +28,7 @@ export default class renderHeroCard {
         this.expPercentage = this.cardExp / this.cardExpNextLvl * 100;
     }
 
-    renderMiniCard(parentElement, index) {
+    renderMiniCard(parentElement, index, vitality) {
         const heroNameClass = 'hero-inventory-name';
         const heroNameId = `hero-inventory-name-${index}`;
 
@@ -63,12 +63,47 @@ export default class renderHeroCard {
 
         nameWrapper.appendChild(heroCardLvl);
 
+        // Vitality
+        
+        const vitalityWrapper = document.createElement('div');
+        vitalityWrapper.id = `vitality-wrapper-${index}`;
+        vitalityWrapper.classList = 'vitality-wrapper flex-container';
+
+        parentElement.appendChild(vitalityWrapper);
+
+        const vitalityBar = document.createElement('div');
+        vitalityBar.id = `vitality-bar-${index}`;
+        vitalityBar.classList = 'vitality-bar';
+
+        vitalityWrapper.appendChild(vitalityBar);
+
+        const vitalityCurrentValue = document.createElement('span');
+        vitalityCurrentValue.id = `vitality-current-value-${index}`;
+        vitalityCurrentValue.classList = 'vitality-current-value';
+        vitalityCurrentValue.innerText = vitality;
+        
+        const vitalityMaxValue = document.createElement('span');
+        vitalityMaxValue.id = `vitality-max-value-${index}`;
+        vitalityMaxValue.classList = 'vitality-max-value';
+        vitalityMaxValue.innerText = vitality;
+
+        const vitalityInnerValueWrapper = document.createElement('div');
+        vitalityInnerValueWrapper.id = `vitality-inner-value-wrapper-${index}`;
+        vitalityInnerValueWrapper.classList = 'vitality-inner-value-wrapper';
+
+        vitalityInnerValueWrapper.appendChild(vitalityCurrentValue);
+        vitalityInnerValueWrapper.appendChild(document.createTextNode('/'));
+        vitalityInnerValueWrapper.appendChild(vitalityMaxValue);
+
+        vitalityWrapper.appendChild(vitalityInnerValueWrapper);
+
+
         const heroCardExpNum = document.createElement('p');
         heroCardExpNum.id = heroExpNumId;
         heroCardExpNum.classList = heroExpNumClass;
 
         if (this.cardExp >= this.cardExpNextLvl) {
-            heroCardWrapper.classList.add('hero-card-lvl-up');
+            //heroCardWrapper.classList.add('hero-card-lvl-up');
             heroCardExpNum.innerText = 'Exp: Lvl Up Availible'
         } else {
             heroCardExpNum.innerText = `Exp: (${this.cardExp}/${this.cardExpNextLvl})`;
@@ -344,7 +379,7 @@ export default class renderHeroCard {
                 strengthStat.innerText = `Strength: ${newStrengthStat}`;
                 //console.log(strengthStat);
                 // trigger reflow
-                const triggerReflow =  heroCardWrapper.offsetHeight;
+                //const triggerReflow =  heroCardWrapper.offsetHeight;
             });
 
             const strengthStatDecButton = document.createElement('button');
