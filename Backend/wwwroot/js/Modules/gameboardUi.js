@@ -1,8 +1,23 @@
 import renderHeroCard from './heroCard.js';
+import cardGenerator from './cardGenerator.js';
 
 export default class gameboard {
-    constructor(playerCardsArray) {
+    constructor(playerCardsArray, itemCardsArray) {
         this.playerCardsArray = playerCardsArray;
+        this.itemCardsArray = itemCardsArray;
+    }
+
+    findItemIndexById(itemData, id) { // finds the index of a item using the item.id
+        console.log(itemData);
+        const index = itemData.findIndex(item => item.id === id);
+
+        if (index < 0 || index >= itemData.length) {
+            console.error(`Index ${index} is out of range for the itemData array.`); // change to throw new error later
+            // player cards during testing do not have the required item card
+            return 0;
+        }
+
+        return index;
     }
 
     renderBoard(parentElement) {
@@ -107,6 +122,8 @@ export default class gameboard {
     }
 
     renderCardInventory(parentElement) {
+        const cardGen = new cardGenerator();
+
         const wrapper = document.createElement('div');
         wrapper.id = 'card-inventory-wrapper';
         wrapper.classList = 'flex-container';
@@ -126,7 +143,7 @@ export default class gameboard {
         });
 
         this.playerCardsArray.forEach((cardObject, index) => {
-            const renderCard = new renderHeroCard(
+            const renderCard = new renderHeroCard( // init render hero card class
                 cardObject.id,
                 '',
                 cardObject.name,
@@ -141,15 +158,23 @@ export default class gameboard {
                 ''
             );
 
+            // calculate card vitality
+            console.log(cardObject.itemHeldId);
+            const itemIndex = this.findItemIndexById(this.itemCardsArray, cardObject.itemHeldId);
+            const vitality = cardGen.generateVitality(
+                cardObject.class, cardObject.strengthStat, this.itemCardsArray[itemIndex].strengthMod, cardObject.lvl);
+
+            // create the player card
             const cardContainer = document.createElement('div');
             cardContainer.classList = 'card-container-item flex-vertical';
             cardContainer.draggable = true;
             cardContainer.id = `card-${cardObject.id}-index-${index}`;
+            cardContainer.setAttribute("Vitality", vitality);
             cardContainer.addEventListener('dragstart', (event) => {
                 event.dataTransfer.setData('text', event.target.id);
             });
             
-            renderCard.renderMiniCard(cardContainer, index);
+            renderCard.renderMiniCard(cardContainer, index, vitality);
 
             wrapper.appendChild(cardContainer);
         });
