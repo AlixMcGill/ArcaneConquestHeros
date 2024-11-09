@@ -3,6 +3,7 @@ import hostadd from './Modules/hostaddress.js';
 import DeckCards from '../js/Modules/deckCards.js';
 import Gameboard from './Modules/gameboardUi.js';
 import generateCards from './Modules/cardGenerator.js';
+import gameboard from './Modules/gameboardUi.js';
 
 const deckCards = new DeckCards;
 const cookies = new Cookie;
@@ -256,6 +257,7 @@ function addNextPhaseCycleEventListener() {
 
 // "Game loop"
 function cycleTurnPhase() { // this has effectively become the "Game loop"
+    const gameUi = new gameboard(); // class to access ui updates
     const nextPhaseButton = document.getElementById('next-phase-button');
     const activeClass = 'active-gameboard-ui-phase-item';
     const phaseIcons = [...document.querySelectorAll('.gameboard-ui-phase-item')];
@@ -280,6 +282,8 @@ function cycleTurnPhase() { // this has effectively become the "Game loop"
 
     //checks to see if card elements are able to be dragged onto the game board by the turn state
     checkIfDraggableByState(turnState, currentGamePhase);
+
+    gameUi.renderUpdates(); // renders ui updates when turn cycles
 }
 
 

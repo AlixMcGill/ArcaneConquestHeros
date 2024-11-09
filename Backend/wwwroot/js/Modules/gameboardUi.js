@@ -7,6 +7,8 @@ export default class gameboard {
         this.itemCardsArray = itemCardsArray;
     }
 
+    // ---------- Initial Board Rendering ---------- 
+
     findItemIndexById(itemData, id) { // finds the index of a item using the item.id
         console.log(itemData);
         const index = itemData.findIndex(item => item.id === id);
@@ -182,9 +184,37 @@ export default class gameboard {
         parentElement.appendChild(wrapper);
     }
 
-    render(parentElement) {
+    // call this method to render game board and player items
+    render(parentElement) { 
         this.renderBoard(parentElement);
         this.renderGameTurnPhaseUi(parentElement);
         this.renderCardInventory(parentElement);
+        this.updateCardVitalityBar(); // updates the card health bar to init
+    }
+
+    // ---------- Update Logic ----------
+    
+    updateCardVitalityBar() {
+       const allCards = [...document.querySelectorAll('.card-container-item')];
+
+        allCards.forEach(card => {
+            const vitalityBar = card.querySelector('.vitality-bar');
+            const currentVitality = parseInt(card.querySelector('.vitality-current-value').innerText);
+            const maxVitality = parseInt(card.querySelector('.vitality-max-value').innerText);
+
+            if (isNaN(currentVitality) || isNaN(maxVitality) || currentVitality === 0 || maxVitality === 0) {
+                console.warn("Invalid vitality values:", currentVitality, maxVitality);
+                vitalityBar.style.width = "0%";
+            }
+
+            const vitalityPercentage = (currentVitality / maxVitality) * 100;
+
+            vitalityBar.style.width = `${vitalityPercentage}%`;
+        });
+    }
+
+    // Method gets called when game updates are required
+    renderUpdates() {
+        this.updateCardVitalityBar();
     }
 }
