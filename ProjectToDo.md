@@ -1,17 +1,17 @@
 # Project To Do schema
 
-- Init Setup Electron App **********
+- Init Setup Electron App ********** -- no longer using electron
 
-- Init Setup dotnet backend
+- Init Setup dotnet backend -- ** 
 
-- database schemas
+- database schemas -- **
     - users
         - id
         - email
         - username
         - password
 
-- Create account login on startup
+- Create account login on startup -- **
     - enter email
     - create username (must not already be in use)
     - create password (must be salted and hashed)
@@ -48,4 +48,5 @@ should be based on average card levels
 - peer to peer Multiplayer (Look into websockets)
 
 
-
+- under ai card generation update probabilities to have some randomness in the probability by 0.1 to 0.3 +- 
+run checks to ensure that total probaliliies for card stats do not exceed 100% and subtract off any amound above that

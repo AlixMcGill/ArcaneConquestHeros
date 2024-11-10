@@ -10,7 +10,7 @@ export default class gameboard {
     // ---------- Initial Board Rendering ---------- 
 
     findItemIndexById(itemData, id) { // finds the index of a item using the item.id
-        console.log(itemData);
+        //console.log(itemData);
         const index = itemData.findIndex(item => item.id === id);
 
         if (index < 0 || index >= itemData.length) {
@@ -43,7 +43,7 @@ export default class gameboard {
  
         const feildCardAmount = 4;
 
-        function createEmptyCardSlot(parent, feildPosition, isDroppable, index) {
+        function createEmptyCardSlot(parent, feildPosition, isDroppable, index, removeDropFunc) {
             const emptyCardSlot = document.createElement('div');
             emptyCardSlot.id = `${feildPosition}-id-${index}`;
             emptyCardSlot.classList = `empty-card-slot ${feildPosition}`;
@@ -62,6 +62,9 @@ export default class gameboard {
                     
                     if (draggedItem) {
                         emptyCardSlot.appendChild(draggedItem);
+                        removeDropFunc();
+                        draggedItem.classList.remove('card-in-hand');
+                        draggedItem.classList.add('card-in-play');
                     } else {
                         console.error("Dragged item not found!");
                     }
@@ -70,11 +73,11 @@ export default class gameboard {
         }
 
         for (let i = 0; i < feildCardAmount; i++) {
-            createEmptyCardSlot(enemyContainer, 'enemy-card-slot', false, i);
+            createEmptyCardSlot(enemyContainer, 'enemy-card-slot', false, i, this.checkPlayerCardsSentToBoard);
         }
  
         for (let i = 0; i < feildCardAmount; i++) {
-            createEmptyCardSlot(playerContainer, 'player-card-slot', true, i);
+            createEmptyCardSlot(playerContainer, 'player-card-slot', true, i, this.checkPlayerCardsSentToBoard);
 
         }
     }
@@ -161,14 +164,14 @@ export default class gameboard {
             );
 
             // calculate card vitality
-            console.log(cardObject.itemHeldId);
+            //console.log(cardObject.itemHeldId);
             const itemIndex = this.findItemIndexById(this.itemCardsArray, cardObject.itemHeldId);
             const vitality = cardGen.generateVitality(
                 cardObject.class, cardObject.strengthStat, this.itemCardsArray[itemIndex].strengthMod, cardObject.lvl);
 
             // create the player card
             const cardContainer = document.createElement('div');
-            cardContainer.classList = 'card-container-item flex-vertical';
+            cardContainer.classList = 'card-container-item flex-vertical card-in-hand';
             cardContainer.draggable = true;
             cardContainer.id = `card-${cardObject.id}-index-${index}`;
             cardContainer.setAttribute("Vitality", vitality);
@@ -213,8 +216,17 @@ export default class gameboard {
         });
     }
 
+    checkPlayerCardsSentToBoard() {
+        console.log("sent");
+        const allPlayerCards = [...document.querySelectorAll('.card-container-item')];
+        allPlayerCards.forEach(card => {
+            card.draggable = false;
+        });
+    }
+
     // Method gets called when game updates are required
     renderUpdates() {
         this.updateCardVitalityBar();
+        this.checkPlayerCardsSentToBoard();
     }
 }
