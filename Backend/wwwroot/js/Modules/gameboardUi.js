@@ -174,7 +174,8 @@ export default class gameboard {
             cardContainer.classList = 'card-container-item flex-vertical card-in-hand';
             cardContainer.draggable = true;
             cardContainer.id = `card-${cardObject.id}-index-${index}`;
-            cardContainer.setAttribute("Vitality", vitality);
+            cardContainer.setAttribute("database-id", cardObject.id);
+            cardContainer.setAttribute("vitality", vitality);
             cardContainer.addEventListener('dragstart', (event) => {
                 event.dataTransfer.setData('text', event.target.id);
             });

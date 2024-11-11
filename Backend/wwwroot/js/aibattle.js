@@ -4,6 +4,7 @@ import DeckCards from '../js/Modules/deckCards.js';
 import Gameboard from './Modules/gameboardUi.js';
 import generateCards from './Modules/cardGenerator.js';
 import gameboard from './Modules/gameboardUi.js';
+import gameLogic from './Modules/gameLogic.js';
 
 const deckCards = new DeckCards;
 const cookies = new Cookie;
@@ -222,12 +223,15 @@ function createPlayerCardLvlArr() {
 
 // ai data generation
 
+let aiCardObjects = [];
+
 function generateAiCards() {
     const lvlArray = createPlayerCardLvlArr();
     const cardGen = new generateCards(10, lvlArray);
-
-    console.log(cardGen.build());
-
+    
+    aiCardObjects = cardGen.build();
+    //console.log(cardGen.build());
+    console.log(aiCardObjects);
 }
 
 // render Gameboard ui
@@ -284,6 +288,12 @@ function cycleTurnPhase() { // this has effectively become the "Game loop"
     checkIfDraggableByState(turnState, currentGamePhase);
 
     gameUi.renderUpdates(); // renders ui updates when turn cycles
+
+    // Game Logic
+    const aiCardSlots = [...document.querySelectorAll('.enemy-card-slot')];
+    const playerCardSlots = [...document.querySelectorAll('.player-card-slot')];
+    const logic = new gameLogic(playerCardSlots, aiCardSlots, cycleTurnPhase);
+    logic.aiBattleLogic(turnState, currentGamePhase, playerCardObjects, aiCardObjects);
 }
 
 
