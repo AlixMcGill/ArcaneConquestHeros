@@ -1,0 +1,7 @@
+.dice-roll-render-container {
+    position: absolute;
+    top: 0;
+    background-color: pink;
+    width: 20rem;
+    height: 20rem;
+}

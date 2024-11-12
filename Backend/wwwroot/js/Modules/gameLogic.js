@@ -13,6 +13,13 @@ export default class gameLogic {
             healing: "Healing",
             end: "End"
         }
+        this.classes = {
+            fighter: "Fighter",
+            assassin: "Assassin",
+            sorcerer: "Sorcerer",
+            trueTank: "True Tank",
+            witch: "Witch"
+        };
         this.allHeroCards = [];
         this.allAiCards = [];
     }
@@ -32,6 +39,33 @@ export default class gameLogic {
 
     findRandIndex(arrayLength) {
         return Math.floor(Math.random() * arrayLength);
+    }
+
+    cardClassColor(element, cardClass) { // this code is repeated in gameboardUI.js
+        switch (cardClass) {
+            case this.classes.fighter:
+                element.classList.add('card-class-fighter');
+                element.classList.add('white-text');
+                break;
+            case this.classes.trueTank:
+                element.classList.add('card-class-true-tank');
+                break;
+            case this.classes.assassin:
+                element.classList.add('card-class-assassin');
+                element.classList.add('white-text');
+                break;
+            case this.classes.sorcerer:
+                element.classList.add('card-class-sorcerer');
+                element.classList.add('white-text');
+                break;
+            case this.classes.witch:
+                element.classList.add('card-class-witch');
+                element.classList.add('white-text');
+                break;
+            default:
+                console.error('cardClassColor func in gameboardUi.js did not find the correct class to add color to');
+                break;
+        }
     }
 
     // ---------- Player Phase Logic ----------
@@ -76,6 +110,7 @@ export default class gameLogic {
         }
 
     }
+
 
     // ---------- AI Phase Logic ----------
    
@@ -125,6 +160,7 @@ export default class gameLogic {
 
         const aiCardContainer = document.createElement('div');
         aiCardContainer.classList = 'ai-card-container-item flex-vertical enemy-feild-card';
+        this.cardClassColor(aiCardContainer, randomEnemyCard.class);
         aiCardContainer.id = `enemy-card-${randomEnemyCard.id}-index-${emptySlotId}`;
         aiCardContainer.setAttribute("database-id", randomEnemyCard.id);
         aiCardContainer.setAttribute('vitality', randomEnemyCard.vitality);
