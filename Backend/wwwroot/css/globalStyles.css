@@ -28,3 +28,31 @@ body {
     display: flex;
     flex-direction: column;
 }
+
+/* ---------- Text Styles ---------- */
+
+.white-text {
+    color: rgb(200,200,200);
+}
+
+/* ---------- Card Styles ----------*/
+
+.card-class-fighter {
+    background-color: #7A544D !important;
+}
+
+.card-class-true-tank {
+    background-color: #958265 !important;
+}
+
+.card-class-assassin {
+    background-color: #363535  !important;
+}
+
+.card-class-sorcerer {
+    background-color: #63435B  !important;
+}
+
+.card-class-witch {
+    background-color: #4D6852 !important;
+}

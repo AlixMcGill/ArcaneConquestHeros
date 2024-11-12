@@ -44,10 +44,10 @@
     justify-content: space-around;
 }
 
-.card-container-item {
+.card-container-item, .ai-card-container-item {
     padding: .5rem;
     background-color: rgb(190,190,190);
-    border: 6px solid white;
+    border: 6px solid rgb(200,200,200);
     border-radius: .5rem;
 }
 
@@ -56,7 +56,7 @@
     min-width: 7rem;
 }
 
-.card-in-play {
+.card-in-play, .ai-card-container-item {
     width: 100%;
     height: 100%;
     box-sizing: border-box;

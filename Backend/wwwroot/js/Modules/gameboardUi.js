@@ -5,6 +5,13 @@ export default class gameboard {
     constructor(playerCardsArray, itemCardsArray) {
         this.playerCardsArray = playerCardsArray;
         this.itemCardsArray = itemCardsArray;
+        this.classes = {
+            fighter: "Fighter",
+            assassin: "Assassin",
+            sorcerer: "Sorcerer",
+            trueTank: "True Tank",
+            witch: "Witch"
+        };
     }
 
     // ---------- Initial Board Rendering ---------- 
@@ -172,6 +179,7 @@ export default class gameboard {
             // create the player card
             const cardContainer = document.createElement('div');
             cardContainer.classList = 'card-container-item flex-vertical card-in-hand';
+            this.cardClassColor(cardContainer, cardObject.class);
             cardContainer.draggable = true;
             cardContainer.id = `card-${cardObject.id}-index-${index}`;
             cardContainer.setAttribute("database-id", cardObject.id);
@@ -186,6 +194,33 @@ export default class gameboard {
         });
 
         parentElement.appendChild(wrapper);
+    }
+
+    cardClassColor(element, cardClass) { // this code is repeated in gameLogic.js
+        switch (cardClass) {
+            case this.classes.fighter:
+                element.classList.add('card-class-fighter');
+                element.classList.add('white-text');
+                break;
+            case this.classes.trueTank:
+                element.classList.add('card-class-true-tank');
+                break;
+            case this.classes.assassin:
+                element.classList.add('card-class-assassin');
+                element.classList.add('white-text');
+                break;
+            case this.classes.sorcerer:
+                element.classList.add('card-class-sorcerer');
+                element.classList.add('white-text');
+                break;
+            case this.classes.witch:
+                element.classList.add('card-class-witch');
+                element.classList.add('white-text');
+                break;
+            default:
+                console.error('cardClassColor func in gameboardUi.js did not find the correct class to add color to');
+                break;
+        }
     }
 
     // call this method to render game board and player items
