@@ -5,6 +5,7 @@ import Gameboard from './Modules/gameboardUi.js';
 import generateCards from './Modules/cardGenerator.js';
 import gameboard from './Modules/gameboardUi.js';
 import gameLogic from './Modules/gameLogic.js';
+import diceRollling from './Modules/diceRolling.js';
 
 const deckCards = new DeckCards;
 const cookies = new Cookie;
@@ -294,6 +295,13 @@ function cycleTurnPhase() { // this has effectively become the "Game loop"
     const playerCardSlots = [...document.querySelectorAll('.player-card-slot')];
     const logic = new gameLogic(playerCardSlots, aiCardSlots, cycleTurnPhase);
     logic.aiBattleLogic(turnState, currentGamePhase, playerCardObjects, aiCardObjects);
+
+    // THIS IS FOR TESTING THE DICE ROLLING ANIMATION ONLY REMOVE LATER STUPID
+    const diceRoller = new diceRollling();
+    const board = document.getElementById('gameboard-container');
+    diceRoller.rollD20(board, "TEST DICE ROLL", (finalRoll) => { 
+        console.log('DICE ROLL TEST:', finalRoll);
+    });
 }
 
 
