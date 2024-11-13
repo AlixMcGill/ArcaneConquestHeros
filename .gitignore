@@ -4,5 +4,8 @@ Backend/bin/
 appsettings.json
 backend.http
 node_modules
+*.js
+*.js.map
+js/
 *.sln
 *.env
