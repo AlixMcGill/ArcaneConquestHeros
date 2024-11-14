@@ -5,10 +5,52 @@
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
     <title>Arcane Conquest Hero's</title>
+    <link rel="stylesheet" href="./css/landingpage.css">
     <link rel="stylesheet" href="./css/globalStyles.css">
   </head>
-  <body>
-      <p>Static Files</p>
-      <a href="./login.html">Login</a>
-  </body>
+    <body id="body">
+        <header>
+            <nav>    
+                <ul class="flex-center-between nav-list">
+                    <li><h1 class="header-item nav-header white-text">Arcane Conquest Hero's</h1></li>
+                    <li><a class="header-item login-button white-text" href="./login.html">Login</a></li> 
+                </ul> 
+            </nav>
+        </header>
+        <main>
+            <section class="hero-section flex-container">
+                <canvas id="landing-page-canvas"></canvas>
+            </section>
+            <section class="about-section">
+                <div class="flex-container">
+                    <h2>A card game with rpg mechanics.</h2> 
+                </div>
+                <div class="about-section-hero-card-section">
+                    <div class="flex-container">
+                        <h3>Create Your Card's</h3>  
+                    </div>
+                    <div class="flex-container section-content">
+                        <div class="about-section-hero-img"></div>
+                        <div class="about-section-hero-text">
+                           <p>askldfj wifajowf  i wefj owij  wjefoiwjefoijw e fwiwejf</p> 
+                        </div>
+                    </div>
+                </div>
+                <div class="about-section-item-card-section">
+                    <div class="flex-container">
+                        <h3>Attach your item's</h3>  
+                    </div>
+                    <div class="flex-container section-content">
+                        <div class="about-section-item-img"></div>
+                        <div class="about-section-item-text">
+                           <p>askldfj wifajowf  i wefj owij  wjefoiwjefoijw e fwiwejf</p> 
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <footer>
+
+        </footer>
+    </body>
 </html>
