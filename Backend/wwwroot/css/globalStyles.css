@@ -24,6 +24,12 @@ body {
     justify-content: space-around;
 }
 
+.flex-center-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .vertical-flex-container {
     display: flex;
     flex-direction: column;
