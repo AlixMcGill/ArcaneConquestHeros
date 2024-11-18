@@ -1,9 +1,7 @@
-body {
-    background-color: rgb(150,150,150) !important;
-}
-
 #body {
     overflow-y: scroll;
+    background-color: rgb(200,200,200) !important;
+    background-image: linear-gradient(43deg, #4158D080 0%, #C850C040 46%, #FFCC7010 100%); 
 }
 
 /*------ Navigation ------*/

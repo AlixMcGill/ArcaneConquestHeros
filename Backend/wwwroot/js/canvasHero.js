@@ -1,7 +1,7 @@
 const canvas = document.getElementById('landing-page-canvas');
 const ctx = canvas.getContext('2d');
 
-const fontSize = 3;
+const fontSize = 8;
 const fontFamily = "Arial";
 
 canvas.width = window.innerWidth;
@@ -24,7 +24,7 @@ class drawChar {
         this.sxp = 0; // scaled x position
         this.syp = 0; // sclaed y position
         this.moveSpeed = this.rand(.1, .6);
-        this.verticalSpeed = 10;
+        this.verticalSpeed = 4;
     }
 
     scalePositiion() {
@@ -36,7 +36,7 @@ class drawChar {
         return Math.random() * (max-min) + min;
     }
 
-    updatePosition() {
+    updatePosition(distance) {
         if (this.xP > canvas.width) {
             this.xP = 0;
         } else if (this.xP < 0) {
@@ -58,12 +58,16 @@ class drawChar {
             this.yP -= this.rand(-this.moveSpeed, this.moveSpeed) + this.verticalSpeed;
         }
         this.scalePositiion();
-        this.draw('@');
+        this.draw('@', distance);
     }
 
-    draw(text) {
+    draw(text, distance) {
         ctx.font = `${fontSize}px ${fontFamily}`;
-        ctx.fillStyle = `rgba(${this.rand(50,200)}, ${this.rand(50,200)}, 237,${this.yP / canvas.height})`;
+        if (distance < 100 + (fontSize * 6)) { 
+            ctx.fillStyle = `rgba(${this.rand(200,255)}, ${this.rand(50,100)}, 80,${this.yP / canvas.height})`;
+        } else {
+            ctx.fillStyle = `rgba(${this.rand(50,200)}, ${this.rand(50,200)}, 237,${this.yP / canvas.height})`;
+        }
         ctx.fillText(text, this.xP, this.yP);
     }
 }
@@ -75,7 +79,7 @@ function clearCanvas() {
 
 const partArray = [];
 
-for (let i = 0; i < 2500; i++) {
+for (let i = 0; i < 500; i++) {
     const drawCh = new drawChar();
     partArray.push(drawCh);
 }
@@ -98,7 +102,6 @@ function update() {
     clearCanvas();
     drawCircle();
     partArray.forEach((part, index) => {
-        part.updatePosition();
         partArray.forEach((part2, index2) => {
             if (index === index2) {
                 return;
@@ -128,6 +131,7 @@ function update() {
             part.xP += moveX2;
             part.yP += moveY2;
         }
+        part.updatePosition(distoCirc);
     });
     window.requestAnimationFrame(update);
 }
