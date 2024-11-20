@@ -54,6 +54,33 @@
     margin-top: 1rem;
 }
 
+.about-section-hero-card-container {
+    height: 50vh;
+    width: 50vw;
+    left: 0;
+}
+
+.about-section-hero-card-item {
+    position: absolute;
+}
+
+.about-section-hero-card-item:nth-child(1) {
+    transform: rotate(-10deg) translate(-80px, -60px);
+}
+
+.about-section-hero-card-item:nth-child(2) {
+    transform: translate(-60px, -40px)
+}
+.about-section-hero-card-item:nth-child(3) {
+    transform: rotate(12deg) translate(-35px, -20px);
+}
+.about-section-hero-card-item:nth-child(4) {
+    transform: rotate(25deg);
+}
+.about-section-hero-card-item:nth-child(5) {
+    transform: rotate(40deg) translate(44px, 10px);
+}
+
 .about-section-item-card-section {
     margin-top: 1rem;
 }
