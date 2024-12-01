@@ -42,7 +42,7 @@ export default class diceRollling {
         faceNumber.id = 'dice-face-number-id';
         faceNumber.classList = 'dice-face-number';
         faceNumber.innerText = '20';
-        diceRollContainer.appendChild(faceNumber);
+        mainFace.appendChild(faceNumber);
 
         let currentFrame = 0;
         const totalFrames = this.renderFrames || 10; // Default to 10 frames if not defined
