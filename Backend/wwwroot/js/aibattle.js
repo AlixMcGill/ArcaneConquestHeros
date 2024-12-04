@@ -281,6 +281,10 @@ function cycleTurnPhase() { // this has effectively become the "Game loop"
     phaseIcons.forEach(e => {e.classList.remove(activeClass)});
     phaseIcons[nextIndex].classList.add(activeClass);
 
+    if (turnState && currentGamePhase === gamePhases[0]) {
+        nextPhaseButton.addEventListener('click', cycleTurnPhase);
+    }
+
     if (!turnState) {
         nextPhaseButton.removeEventListener('click', cycleTurnPhase);
     }

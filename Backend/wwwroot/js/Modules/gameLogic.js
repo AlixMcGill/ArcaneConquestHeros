@@ -5,7 +5,7 @@ export default class gameLogic {
         this.playerCardSlots = playerCardSlots;
         this.aiCardSlots = aiCardSlots;
         this.cycleGameLoop = cycleGameLoop; // be careful of recursion
-        this.aiTurnDelay = 60 // may not use if ai turns are too quick add delay be for logic is calculated
+        this.aiTurnDelay = 3000 // may not use, if ai turns are too quick add delay before logic is calculated
         this.turnPhase = {
             start: "Start",
             action: "Action",
@@ -22,6 +22,7 @@ export default class gameLogic {
         };
         this.allHeroCards = [];
         this.allAiCards = [];
+        this.playedAiCards = [];
     }
     // ---------- Extraneous Logic ----------
     
@@ -66,6 +67,21 @@ export default class gameLogic {
                 console.error('cardClassColor func in gameboardUi.js did not find the correct class to add color to');
                 break;
         }
+    }
+
+    checkForTank(cardSlots) {
+        // checks for true tank on opponents side and returns -1 if no tanks or returns index of tank in slot
+        for (let i = 0; i < cardSlots.length; i++) {
+            const slot = cardSlots[i];
+            if (slot.hasChildNodes()) {
+                const childAttribute = slot.children[0].getAttribute("card-class");
+                console.log(childAttribute);
+                if (childAttribute === this.classes.trueTank) {
+                    return i;
+                }
+            }
+        };
+        return -1;
     }
 
     // ---------- Player Phase Logic ----------
@@ -128,6 +144,11 @@ export default class gameLogic {
             return;
         }
 
+        if (this.playedAiCards >= this.allAiCards) { // checks to see if all cards have been played
+            this.cycleGameLoop();
+            return;
+        }
+
         // remove all played card from allAiCards array
 
         // pick a random card to be displayed
@@ -137,6 +158,7 @@ export default class gameLogic {
         const randomEnemyCardIndex = this.findRandIndex(this.allAiCards.length);
         const randomEnemyCard = this.allAiCards[randomEnemyCardIndex]; // find random ai card
 
+        this.playedAiCards.push(randomEnemyCardIndex); // adds the played card index to array to track played cards
 
         // create card and append it to the screen in specified card slot
         const newCard = new renderHeroCard(
@@ -165,12 +187,13 @@ export default class gameLogic {
         aiCardContainer.setAttribute("database-id", randomEnemyCard.id);
         aiCardContainer.setAttribute('vitality', randomEnemyCard.vitality);
         aiCardContainer.setAttribute('card-class', randomEnemyCard.class);
+        aiCardContainer.setAttribute('actions', randomEnemyCard.actions);
 
         newCard.renderMiniCard(aiCardContainer, emptySlotId, randomEnemyCard.vitality);
 
         emptySlot.appendChild(aiCardContainer);
 
-        this.cycleGameLoop();
+        setTimeout(this.cycleGameLoop, this.aiTurnDelay);
     }
 
     aiActionPhase(turnState, turnPhase) {
@@ -178,7 +201,11 @@ export default class gameLogic {
             console.error("AI Action Phase Logic was called in the incorrect turn state or phase", turnState, turnPhase);
             return;
         }
+        
+        const tankIndex = this.checkForTank(this.playerCardSlots);
+        console.log("Tank Index:", tankIndex);
 
+        setTimeout(this.cycleGameLoop, this.aiTurnDelay);
     }
 
     aiDamagePhase(turnState, turnPhase) {
@@ -186,7 +213,8 @@ export default class gameLogic {
             console.error("AI Damage Phase Logic was called in the incorrect turn state or phase", turnState, turnPhase);
             return;
         }
-
+         
+        setTimeout(this.cycleGameLoop, this.aiTurnDelay);
     }
 
     aiHealingPhase(turnState, turnPhase) {
@@ -195,6 +223,7 @@ export default class gameLogic {
             return;
         }
 
+        setTimeout(this.cycleGameLoop, this.aiTurnDelay);
     }
 
     aiEndPhase(turnState, turnPhase) {
@@ -202,7 +231,8 @@ export default class gameLogic {
             console.error("AI End Phase Logic was called in the incorrect turn state or phase", turnState, turnPhase);
             return;
         }
-
+        
+        setTimeout(this.cycleGameLoop, this.aiTurnDelay);
     }
 
     aiBattleLogic(turnState, turnPhase, heroCards, aiCards) {

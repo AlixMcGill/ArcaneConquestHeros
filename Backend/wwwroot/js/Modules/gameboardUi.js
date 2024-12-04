@@ -183,7 +183,9 @@ export default class gameboard {
             cardContainer.draggable = true;
             cardContainer.id = `card-${cardObject.id}-index-${index}`;
             cardContainer.setAttribute("database-id", cardObject.id);
+            cardContainer.setAttribute("card-index", index);
             cardContainer.setAttribute("vitality", vitality);
+            cardContainer.setAttribute("card-class", cardObject.class);
             cardContainer.addEventListener('dragstart', (event) => {
                 event.dataTransfer.setData('text', event.target.id);
             });
