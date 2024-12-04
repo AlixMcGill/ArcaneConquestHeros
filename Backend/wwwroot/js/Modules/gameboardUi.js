@@ -265,6 +265,5 @@ export default class gameboard {
     // Method gets called when game updates are required
     renderUpdates() {
         this.updateCardVitalityBar();
-        this.checkPlayerCardsSentToBoard();
     }
 }

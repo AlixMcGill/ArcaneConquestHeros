@@ -317,9 +317,8 @@ function togglePhaseWrapperClass() {
 
 function checkIfDraggableByState(turnState, gamePhase) {
     const cardsInInventory = [...document.querySelectorAll('.card-container-item')];
-
     cardsInInventory.forEach(card => {
-        if (turnState && gamePhase === "Start") {
+        if (turnState && gamePhase === gamePhases[0]) {
             card.draggable = true;
         } else {
             card.draggable = false;
