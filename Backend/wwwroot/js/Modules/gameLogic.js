@@ -5,7 +5,7 @@ export default class gameLogic {
         this.playerCardSlots = playerCardSlots;
         this.aiCardSlots = aiCardSlots;
         this.cycleGameLoop = cycleGameLoop; // be careful of recursion
-        this.aiTurnDelay = 60 // may not use, if ai turns are too quick add delay before logic is calculated
+        this.aiTurnDelay = 3000 // may not use, if ai turns are too quick add delay before logic is calculated
         this.turnPhase = {
             start: "Start",
             action: "Action",
@@ -193,7 +193,7 @@ export default class gameLogic {
 
         emptySlot.appendChild(aiCardContainer);
 
-        this.cycleGameLoop();
+        setTimeout(this.cycleGameLoop, this.aiTurnDelay);
     }
 
     aiActionPhase(turnState, turnPhase) {
@@ -204,6 +204,8 @@ export default class gameLogic {
         
         const tankIndex = this.checkForTank(this.playerCardSlots);
         console.log("Tank Index:", tankIndex);
+
+        setTimeout(this.cycleGameLoop, this.aiTurnDelay);
     }
 
     aiDamagePhase(turnState, turnPhase) {
@@ -211,7 +213,8 @@ export default class gameLogic {
             console.error("AI Damage Phase Logic was called in the incorrect turn state or phase", turnState, turnPhase);
             return;
         }
-
+         
+        setTimeout(this.cycleGameLoop, this.aiTurnDelay);
     }
 
     aiHealingPhase(turnState, turnPhase) {
@@ -220,6 +223,7 @@ export default class gameLogic {
             return;
         }
 
+        setTimeout(this.cycleGameLoop, this.aiTurnDelay);
     }
 
     aiEndPhase(turnState, turnPhase) {
@@ -227,7 +231,8 @@ export default class gameLogic {
             console.error("AI End Phase Logic was called in the incorrect turn state or phase", turnState, turnPhase);
             return;
         }
-
+        
+        setTimeout(this.cycleGameLoop, this.aiTurnDelay);
     }
 
     aiBattleLogic(turnState, turnPhase, heroCards, aiCards) {
