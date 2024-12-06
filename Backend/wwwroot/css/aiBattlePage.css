@@ -93,3 +93,20 @@
     height: 1.3rem;
     /*width: 100%;*/ /* testing */
 }
+
+/* player actions phase */
+
+.active-action-slot {
+    border: 2px solid purple;
+    box-shadow: 0px 0px 15px purple;
+}
+
+.active-onclick-action-slot {
+    border: 2px solid red;
+    box-shadow: 0px 0px 15px red;
+}
+
+.active-ai-onclick-action-slot {
+    border: 2px solid white;
+    box-shadow: 0px 0px 15px white;
+}

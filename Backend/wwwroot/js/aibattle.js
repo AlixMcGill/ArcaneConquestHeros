@@ -301,11 +301,11 @@ function cycleTurnPhase() { // this has effectively become the "Game loop"
     logic.aiBattleLogic(turnState, currentGamePhase, playerCardObjects, aiCardObjects);
 
     // THIS IS FOR TESTING THE DICE ROLLING ANIMATION ONLY REMOVE LATER STUPID
-    const diceRoller = new diceRollling();
-    const board = document.getElementById('gameboard-container');
-    diceRoller.rollD20(board, "TEST DICE ROLL", (finalRoll) => { 
-        console.log('DICE ROLL TEST:', finalRoll);
-    });
+    //const diceRoller = new diceRollling();
+    //const board = document.getElementById('gameboard-container');
+    //diceRoller.rollD20(board, "TEST DICE ROLL", (finalRoll) => { 
+    //    console.log('DICE ROLL TEST:', finalRoll);
+    //});
 }
 
 

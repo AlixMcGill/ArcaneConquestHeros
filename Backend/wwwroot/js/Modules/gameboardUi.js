@@ -186,6 +186,7 @@ export default class gameboard {
             cardContainer.setAttribute("card-index", index);
             cardContainer.setAttribute("vitality", vitality);
             cardContainer.setAttribute("card-class", cardObject.class);
+            cardContainer.setAttribute("actions", cardObject.actions);
             cardContainer.addEventListener('dragstart', (event) => {
                 event.dataTransfer.setData('text', event.target.id);
             });

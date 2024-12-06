@@ -5,7 +5,7 @@ export default class gameLogic {
         this.playerCardSlots = playerCardSlots;
         this.aiCardSlots = aiCardSlots;
         this.cycleGameLoop = cycleGameLoop; // be careful of recursion
-        this.aiTurnDelay = 3000 // may not use, if ai turns are too quick add delay before logic is calculated
+        this.aiTurnDelay = 1000 // may not use, if ai turns are too quick add delay before logic is calculated
         this.turnPhase = {
             start: "Start",
             action: "Action",
@@ -84,6 +84,46 @@ export default class gameLogic {
         return -1;
     }
 
+    getFilledSlots(cardSlots) {
+        let filledSlots = [];
+        for (let i = 0; i < cardSlots.length; i++) {
+            const slot = cardSlots[i];
+            if (slot.hasChildNodes()) {
+                filledSlots.push(i);
+            }
+        }
+        return filledSlots;
+    }
+
+    getCardActions(cardSlots) {
+        const filledSlots = this.getFilledSlots(cardSlots);
+        let actions = [];
+        for (let i = 0; i < filledSlots.length; i++) {
+            const actionObj = {
+                slotIndex : filledSlots[i],
+                actions : parseInt(cardSlots[filledSlots[i]].children[0].getAttribute("actions"))
+            };
+            actions.push(actionObj);
+        }
+        return actions;
+    }
+
+    actionOnClick(card) {
+        card.classList.remove("active-action-slot");
+        card.classList.add("active-onclick-action-slot");
+    }
+
+    destroyActionPhaseLogic(cardSlots, aiCardSlots) {
+        for (let i = 0; i < cardSlots.length; i++) {
+            cardSlots[i].classList.remove("active-action-slot");
+            cardSlots[i].classList.remove("active-onclick-action-slot");
+            cardSlots[i].removeEventListener('click', this.actionOnClick);
+        }
+        for (let i = 0; i < aiCardSlots.length; i++) {
+            aiCardSlots.classList.remove("active-ai-onclick-action-slot");
+        }
+    }
+
     // ---------- Player Phase Logic ----------
 
     // the players turnState will always return true
@@ -100,10 +140,22 @@ export default class gameLogic {
             console.error("Player Action Phase Logic was called in the incorrect turn state or phase", turnState, turnPhase);
             return;
         }
+       
+        const actions = this.getCardActions(this.playerCardSlots);
+        console.log("Action Obj", actions);
 
+        for (let i = 0; i < actions.length; i++) {
+            if (actions[i].actions > 0) {
+                this.playerCardSlots[actions[i].slotIndex].classList.add("active-action-slot");
+                this.playerCardSlots[actions[i].slotIndex].addEventListener('click', () => {
+                    this.actionOnClick(this.playerCardSlots[actions[i].slotIndex]);
+                });
+            }
+        }
     }
 
     playerDamagePhase(turnState, turnPhase) {
+        this.destroyActionPhaseLogic(this.playerCardSlots, this.aiCardSlots); // destroy selection highlights from action phase
         if (!turnState || turnPhase !== this.turnPhase.damage){
             console.error("Player Damage Phase Logic was called in the incorrect turn state or phase", turnState, turnPhase);
             return;
